@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Register</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.flag_val.label }}<br>
+            {{ form.flag_val(size=32) }}<br>
+            {% for error in form.flag_val.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.flag_round.label }}<br>
+            {{ form.flag_round(size=32) }}<br>
+            {% for error in form.flag_round.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.problem_id.label }}<br>
+            {{ form.problem_id(size=32) }}<br>
+            {% for error in form.problem_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
