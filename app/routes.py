@@ -1,9 +1,9 @@
 import os
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
-from app.forms import RegistrationForm
-from app.models import flag_table
+from app.forms import RegistrationForm, ProbInsertForm
+from app.models import flag_table, problem
 from werkzeug import secure_filename
 
 @app.route('/')
@@ -34,3 +34,18 @@ def uploadTest():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     return render_template('uploadTest.html', title='uploadTest')
+
+
+@app.route('/inputProb', methods=['GET', 'POST'])
+def inputProb():
+    form = ProbInsertForm()
+    if form.validate_on_submit():
+        Prob = problem(problem_id=form.problem_id.data, problem_name=form.problem_name.data)
+        db.session.add(Prob)
+        db.session.commit()
+        flash('Prob has submitted')
+        return redirect(url_for('index'))
+    return render_template('inputProb.html', title='inputProb', form=form)
+
+    
+

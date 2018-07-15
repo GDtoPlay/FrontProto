@@ -15,3 +15,14 @@ class RegistrationForm(FlaskForm):
         Key = flag_table.query.filter_by(flag_val=flag_val.data).first()
         if Key is not None:
             raise ValidationError('This flag_val is aready in here')
+
+
+class ProbInsertForm(FlaskForm):
+    problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    problem_name = StringField('Prob_Name', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_Prob(self, flag_table):
+        Prob = problem.query.filter_by(problem_id=problem_id.data).first()
+        if Prob is not None:
+            raise ValidationError('This problem_id is aready in here')
