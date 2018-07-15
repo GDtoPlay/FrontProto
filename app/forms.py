@@ -1,17 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField
+from wtforms import StringField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import Key
+from app.models import flag_table
 
 
 
 class RegistrationForm(FlaskForm):
-    Key = StringField('Key', validators=[DataRequired()])
-    Round = StringField('Round', validators=[DataRequired()])
-    Prob = StringField('Prob', validators=[DataRequired()])
+    flag_val = StringField('Key', validators=[DataRequired()])
+    flag_round = IntegerField('Round', validators=[DataRequired()])
+    problem_id = IntegerField('Prob', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
-    def validate_Key(self, Key):
-        Key = Key.query.filter_by(Key=Key.data).first()
+    def validate_Key(self, flag_table):
+        Key = flag_table.query.filter_by(flag_val=flag_val.data).first()
         if Key is not None:
-            raise ValidationError('This Key is aready in here')
+            raise ValidationError('This flag_val is aready in here')

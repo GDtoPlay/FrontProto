@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
 from app.forms import RegistrationForm
-from app.models import Key
+from app.models import flag_table
 from werkzeug import secure_filename
 
 @app.route('/')
@@ -15,7 +15,7 @@ def index():
 def inputKeys():
     form = RegistrationForm()
     if form.validate_on_submit():
-        key = Key(Key=form.Key.data, Round=form.Round.data, Prob=form.Prob.data)
+        key = flag_table(flag_val=form.flag_val.data, flag_round=form.flag_round.data, problem_id=form.problem_id.data)
         db.session.add(key)
         db.session.commit()
         flash('Key has submitted')

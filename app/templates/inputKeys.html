@@ -5,23 +5,23 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
-            {{ form.Key.label }}<br>
-            {{ form.Key(size=64) }}<br>
-            {% for error in form.Key.errors %}
+            {{ form.flag_val.label }}<br>
+            {{ form.flag_val(size=32) }}<br>
+            {% for error in form.flag_val.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
-            {{ form.Round.label }}<br>
-            {{ form.Round(size=32) }}<br>
-            {% for error in form.Round.errors %}
+            {{ form.flag_round.label }}<br>
+            {{ form.flag_round(size=32) }}<br>
+            {% for error in form.flag_round.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
-            {{ form.Prob.label }}<br>
-            {{ form.Prob(size=64) }}<br>
-            {% for error in form.Prob.errors %}
+            {{ form.problem_id.label }}<br>
+            {{ form.problem_id(size=32) }}<br>
+            {% for error in form.problem_id.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
