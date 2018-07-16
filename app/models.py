@@ -16,7 +16,7 @@ class flag_table(db.Model):
 class flag_stolen(db.Model):
     __tablename__ = 'flag_stolen'
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.problem_id'), primary_key=True)
-    ids = db.Column(db.VARCHAR(400))
+    ids = db.Column(db.VARCHAR(400), primary_key=True)
 
 
     def __repr__(self):
