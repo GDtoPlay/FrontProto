@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, url_for, flash
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
-from app.forms import RegistrationForm, ProbInsertForm
+from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm
 from app.models import flag_table, problem
 from werkzeug import secure_filename
 
@@ -47,5 +47,16 @@ def inputProb():
         return redirect(url_for('index'))
     return render_template('inputProb.html', title='inputProb', form=form)
 
-    
+
+
+@app.route('/deleteProb', methods=['GET', 'POST'])
+def deleteProb():
+    form = ProbDeleteForm()
+    if form.validate_on_submit():
+        Del = problem.query.filter_by(problem_id=form.problem_id.data).first()
+        db.session.delete(Del)
+        db.session.commit()
+        flash('Prob has deleted')
+        return redirect(url_for('index'))
+    return render_template('deleteProb.html', title='inputProb', form=form)
 
