@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>List Prob</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.problem_id.label }}<br>
+            {{ form.problem_id(size=32) }}<br>
+            {% for error in form.problem_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>problem_id </th>
+                <th>problem_name </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if Select %}
+            <tr>
+                <td>{{Select.problem_id}}</td>
+                <td>{{Select.problem_name}}</td>
+            </tr>
+        {% endif %}
+        {% for prob in List %}
+            <tr>
+                <td>{{prob.problem_id}}</td>
+                <td>{{prob.problem_name}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>    
+{% endblock %}
