@@ -2,3 +2,9 @@ see here:
 
 http://intellegibilisverum.tistory.com/entry/sqlAlchemy-%EC%BF%BC%EB%A6%AC%EB%AC%B8-%EB%B0%94%EB%A1%9C-%EC%93%B0%EA%B8%B0
 
+
+https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
+
+
+http://flask-sqlalchemy.pocoo.org/2.3/api/
+
