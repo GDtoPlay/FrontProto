@@ -1,11 +1,8 @@
-<html>
-    <head>
-      <title>FrontProto</title>
-    </head>
-    <body>
-        <h2>Main: <a href="/index">Main</a></h2>
-	<br>
+{% extends "base.html" %}
 
+{% block content %}
+    <body>
+        <div class="container">
 	<h2>Save Keys: <a href="/inputKeys">inputKeys</a></h2>
         <br>
 	
@@ -28,5 +25,7 @@
         <br>
 
         <hr>
+        </div>
     </body>
-</html>
+{% endblock %}
+

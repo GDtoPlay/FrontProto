@@ -1,14 +1,14 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}FrontProto{% endblock %}
 
-<html>
-    <head>
-        <title>FrontProto</title>
-    </head>
-    <body>
-        <div>
-            FrontProto:
-            <a href="{{ url_for('index') }}">Home</a>
-        </div>
-        <hr>
-        {% block content %}{% endblock %}
-    </body>
-</html>
+{% block navbar %}
+<nav class="navbar-inverse">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Main</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+
