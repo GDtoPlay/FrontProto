@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField, IntegerField
+from wtforms import StringField, BooleanField, SubmitField, IntegerField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import flag_table, problem
+from app.models import flag_table, problem, round_time
 
 
 
@@ -46,3 +46,35 @@ class ProbListForm(FlaskForm):
         Prob = problem.query.filter_by(problem_id=problem_id.data).first()
         if Prob is None:
             raise ValidationError('This problem_id does not exist')
+
+
+class RoundInsertForm(FlaskForm):
+    round_number = IntegerField('Round_Num', validators=[DataRequired()])
+    rount_start = DateTimeField('Rount_Start', format="%Y-%m-%dT%H:%M:%S", validators=[DataRequired()])
+    rount_end = DateTimeField('Rount_End', format="%Y-%m-%dT%H:%M:%S", validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_round_number(self, round_number):
+        Round = round_time.query.filter_by(round_number=round_number.data).first()
+        if Round is not None:
+            raise ValidationError('This round_number is aready in here')
+
+
+class RoundDeleteForm(FlaskForm):
+    round_number = IntegerField('Round_Num', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_round_number(self, round_number):
+        Round = round_time.query.filter_by(round_number=round_number.data).first()
+        if Round is None:
+            raise ValidationError('This round_number does not exist')
+
+
+class RoundListForm(FlaskForm):
+    round_number = IntegerField('Round_num', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_round_number(self, round_number):
+        Round = round_time.query.filter_by(round_number=round_number.data).first()
+        if Round is None:
+            raise ValidationError('This round_number does not exist')

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>List Prob</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.round_number.label }}<br>
+            {{ form.round_number(size=32) }}<br>
+            {% for error in form.round_number.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>round_number</th>
+                <th>rount_start</th>
+                <th>rount_end</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if Select %}
+            <tr>
+                <td>{{Select.round_number}}</td>
+                <td>{{Select.rount_start}}</td>
+                <td>{{Select.rount_end}}</td>
+            </tr>
+        {% endif %}
+        {% for round in List %}
+            <tr>
+                <td>{{round.round_number}}</td>
+                <td>{{round.rount_start}}</td>
+                <td>{{round.rount_end}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
