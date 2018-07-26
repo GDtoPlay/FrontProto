@@ -75,9 +75,9 @@ def listProb():
 def inputRounds():
     form = RoundInsertForm()
     if form.validate_on_submit():
-        if form.rount_start.data.time() <= form.rount_end.data.time():
+        if form.rount_start.data >= form.rount_end.data:
             flash('Invalid round_start, round_end')
-            return redirect(url_for('index'))
+            return redirect(url_for('inputRounds'))
         Round = round_time(round_number=form.round_number.data, rount_start=form.rount_start.data, rount_end=form.rount_end.data)
         db.session.add(Round)
         db.session.commit()
