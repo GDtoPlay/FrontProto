@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>List Prob</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.problem_id.label }}<br>
+            {{ form.problem_id(size=32) }}<br>
+            {% for error in form.problem_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>problem_id </th>
+                <th>flag_stolen </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prob in view_list %}
+            <tr>
+                <td>{{prob[0]}}</td>
+                {% if prob[1].scalar() > 0 %}
+                <td><button type="button" class="btn btn-danger">Yes</button></td>
+                {% else %}
+                <td><button type="button" class="btn btn-success">No</button></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

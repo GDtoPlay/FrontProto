@@ -78,3 +78,13 @@ class RoundListForm(FlaskForm):
         Round = round_time.query.filter_by(round_number=round_number.data).first()
         if Round is None:
             raise ValidationError('This round_number does not exist')
+
+
+class FlagStolenListForm(FlaskForm):
+    problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_problem_id(self, problem_id):
+        Prob = problem.query.filter_by(problem_id=problem_id.data).first()
+        if Prob is None:
+            raise ValidationError('This problem_id does not exist')

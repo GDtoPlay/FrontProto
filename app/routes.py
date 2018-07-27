@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, url_for, flash
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
-from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm
+from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm, FlagStolenListForm
 from app.models import flag_table, problem, round_time
 from werkzeug import secure_filename
 from datetime import datetime
@@ -107,3 +107,21 @@ def listRound():
     List = db.engine.execute('select * from round_time')
     return render_template('listRound.html', title='listRound', form=form, List=List, Select=None)
 
+
+@app.route('/listFlagStolen', methods=['GET', 'POST'])
+def listFlagStolen():
+    form = FlagStolenListForm()
+    view_list = []
+    butten = None
+    sql = 'select * from flag_stolen where problem_id = '
+    if form.validate_on_submit():
+        Prob = problem.query.filter_by(problem_id=form.problem_id.data).first()
+        butten = db.engine.execute(sql + str(Prob.problem_id))
+        view_list.append([Prob.problem_id, butten])
+        return render_template('listFlagStolen.html', title='listFlagStolen', form=form, view_list=view_list)
+    prob_list = db.engine.execute('select problem_id from problem')
+    for prob in prob_list:
+        butten = None
+        butten = db.engine.execute(sql + str(prob.problem_id))
+        view_list.append([prob.problem_id, butten])
+    return render_template('listFlagStolen.html', title='listFlagStolen', form=form, view_list=view_list)

@@ -1,0 +1,6 @@
+db.engine.execute... count: .scalar() (ResultProxy.scalar())
+
+or
+
+session.query(Class_name).filter_by(condition).count()
+
