@@ -2,8 +2,8 @@ import os
 from flask import render_template, request, redirect, url_for, flash
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
-from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm, FlagStolenListForm
-from app.models import flag_table, problem, round_time
+from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm, FlagStolenListForm, FlagStolenInsertForm
+from app.models import flag_table, problem, round_time, flag_stolen
 from werkzeug import secure_filename
 from datetime import datetime
 
@@ -107,6 +107,18 @@ def listRound():
     List = db.engine.execute('select * from round_time')
     return render_template('listRound.html', title='listRound', form=form, List=List, Select=None)
 
+# for test not a real function to be served
+@app.route('/inputFlagStolen', methods=['GET', 'POST'])
+def inputFlagStolen():
+    form = FlagStolenInsertForm()
+    if form.validate_on_submit():
+        FlagStolen = flag_stolen(problem_id=form.problem_id.data, ids=form.ids.data)
+        db.session.add(FlagStolen)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('inputFlagStolen.html', title='inputFlagStolen', form=form)
+
+
 
 @app.route('/listFlagStolen', methods=['GET', 'POST'])
 def listFlagStolen():
@@ -125,3 +137,11 @@ def listFlagStolen():
         butten = db.engine.execute(sql + str(prob.problem_id))
         view_list.append([prob.problem_id, butten])
     return render_template('listFlagStolen.html', title='listFlagStolen', form=form, view_list=view_list)
+
+
+@app.route('/stolenFlag', methods=['GET'])
+def stolenFlag():
+    problem_id = request.args.get('problem_id')
+    sql = 'select * from flag_stolen where problem_id = '
+    stolen_list = db.engine.execute(sql + str(problem_id))
+    return render_template('StolenFlag.html', title='stolenFlag', stolen_list=stolen_list)

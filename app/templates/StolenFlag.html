@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>List Prob</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>problem_id </th>
+                <th>ids </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prob in stolen_list %}
+            <tr>
+                <td>{{prob.problem_id}}</td>
+                <td>{{prob.ids}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

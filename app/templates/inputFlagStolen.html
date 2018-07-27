@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>Input Prob</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.problem_id.label }}<br>
+            {{ form.problem_id(size=32) }}<br>
+            {% for error in form.problem_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.ids.label }}<br>
+            {{ form.ids(size=32) }}<br>
+            {% for error in form.ids.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    </div>
+{% endblock %}
