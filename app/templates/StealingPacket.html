@@ -2,19 +2,17 @@
 
 {% block content %}
     <div class="container">
-    <h1>Stolen Flag</h1>
+    <h1>StealingPacket</h1>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>problem_id </th>
-                <th>ids </th>
+                <th>Packet_Num</th>
             </tr>
         </thead>
         <tbody>
-        {% for prob in Nstolen_list %}
+        {% for packet in parsed_packets %}
             <tr>
-                <td>{{prob[0]}}</td>
-                <td><a href='/stealingPacket?packets={{prob[1]}}'>{{prob[1]}}</a></td>
+                <td>{{packet}}</td>
             </tr>
         {% endfor %}
         </tbody>

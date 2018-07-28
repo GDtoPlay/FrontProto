@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, IntegerField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import flag_table, problem, round_time
+from app.models import flag_table, problem, round_time, flag_stolen
 
 
 
@@ -80,6 +80,7 @@ class RoundListForm(FlaskForm):
             raise ValidationError('This round_number does not exist')
 
 
+# for test not a real function to be served
 class FlagStolenInsertForm(FlaskForm):
     problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
     ids = StringField('ids', validators=[DataRequired()])
@@ -87,6 +88,17 @@ class FlagStolenInsertForm(FlaskForm):
 
     def validate_problem_id(self, problem_id):
         Prob = problem.query.filter_by(problem_id=problem_id.data).first()
+        if Prob is None:
+            raise ValidationError('This problem_id does not exist')
+
+
+# for test not a real function to be served
+class FlagStolenDeleteForm(FlaskForm):
+    problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_problem_id(self, problem_id):
+        Prob = flag_stolen.query.filter_by(problem_id=problem_id.data).first()
         if Prob is None:
             raise ValidationError('This problem_id does not exist')
 

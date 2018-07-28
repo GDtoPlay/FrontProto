@@ -2,8 +2,9 @@ import os
 from flask import render_template, request, redirect, url_for, flash
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
-from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm, FlagStolenListForm, FlagStolenInsertForm
+from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm, FlagStolenListForm, FlagStolenInsertForm, FlagStolenDeleteForm
 from app.models import flag_table, problem, round_time, flag_stolen
+from app.parser import parser
 from werkzeug import secure_filename
 from datetime import datetime
 
@@ -107,6 +108,7 @@ def listRound():
     List = db.engine.execute('select * from round_time')
     return render_template('listRound.html', title='listRound', form=form, List=List, Select=None)
 
+
 # for test not a real function to be served
 @app.route('/inputFlagStolen', methods=['GET', 'POST'])
 def inputFlagStolen():
@@ -118,6 +120,17 @@ def inputFlagStolen():
         return redirect(url_for('index'))
     return render_template('inputFlagStolen.html', title='inputFlagStolen', form=form)
 
+
+# for test not a real function to be served
+@app.route('/deleteFlagStolen', methods=['GET', 'POST'])
+def deleteFlagStolen():
+    form = FlagStolenDeleteForm()
+    if form.validate_on_submit():
+        Del = flag_stolen.query.filter_by(problem_id=form.problem_id.data).first()
+        db.session.delete(Del)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('deleteFlagStolen.html', title='deleteFlagStolen', form=form)
 
 
 @app.route('/listFlagStolen', methods=['GET', 'POST'])
@@ -144,4 +157,19 @@ def stolenFlag():
     problem_id = request.args.get('problem_id')
     sql = 'select * from flag_stolen where problem_id = '
     stolen_list = db.engine.execute(sql + str(problem_id))
-    return render_template('StolenFlag.html', title='stolenFlag', stolen_list=stolen_list)
+    hex_list = []
+    Nstolen_list = []
+    for stolen in stolen_list:
+        prob_id = stolen.problem_id
+        hex_str = ''
+        for ToHex in stolen.ids:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        Nstolen_list.append([prob_id, hex_str])
+    return render_template('StolenFlag.html', title='stolenFlag', Nstolen_list=Nstolen_list)
+
+
+@app.route('/stealingPacket', methods=['GET'])
+def stealingPacket():
+    packets = request.args.get('packets')
+    parsed_packets = parser(packets)
+    return render_template('StealingPacket.html', title='stealingPacket', parsed_packets=parsed_packets)
