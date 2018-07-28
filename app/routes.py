@@ -163,13 +163,13 @@ def stolenFlag():
         prob_id = stolen.problem_id
         hex_str = ''
         for ToHex in stolen.ids:
-            hex_str = hex_str + hex(ord(ToHex)) + ' '
+            hex_str = hex_str + hex(ord(ToHex)) + " "
         Nstolen_list.append([prob_id, hex_str])
     return render_template('StolenFlag.html', title='stolenFlag', Nstolen_list=Nstolen_list)
 
 
-@app.route('/stealingPacket', methods=['GET'])
+@app.route('/stealingPacket', methods=['POST'])
 def stealingPacket():
-    packets = request.args.get('packets')
+    packets = request.form['packets']
     parsed_packets = parser(packets)
     return render_template('StealingPacket.html', title='stealingPacket', parsed_packets=parsed_packets)

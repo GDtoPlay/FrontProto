@@ -8,13 +8,17 @@
             <tr>
                 <th>problem_id </th>
                 <th>ids </th>
+                <th>go </th>
             </tr>
         </thead>
         <tbody>
         {% for prob in Nstolen_list %}
             <tr>
                 <td>{{prob[0]}}</td>
-                <td><a href='/stealingPacket?packets={{prob[1]}}'>{{prob[1]}}</a></td>
+                <form action="{{ url_for('stealingPacket') }}" method="post">
+			<td><input readonly type="hidden" name="packets" value={{prob[1]}}/>{{prob[1]}}</td>
+			<td><input type="submit" value="go"></td>
+		</form>
             </tr>
         {% endfor %}
         </tbody>
