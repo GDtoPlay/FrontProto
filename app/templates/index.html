@@ -3,43 +3,94 @@
 {% block content %}
     <body>
         <div class="container">
-	<h2>Save Keys: <a href="/inputKeys">inputKeys</a></h2>
         <br>
-	
-	<h2>Save Pcap And Run: <a href="/inputPcap">inputPcap</a></h2>
-        <br>
-
-	<h2>Get info From Backhand: <a href="/getInfo">getInfo</a></h2>
-        <br>
-
-	<h2>Upload Test: <a href="/uploadTest">Test</a></h2>
-        <br>
-
-        <h2>Prob insert Test: <a href="/inputProb">Test</a></h2>
-        <br>
-
-        <h2>Prob delete Test: <a href="/deleteProb">Test</a></h2>
+	<table class="table table-bordered">
+		<thead>
+		    <tr>
+			<th>keys</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <tr>
+			<td>Save Keys&nbsp;&nbsp;<a href="/inputKeys"><button class="btn btn-info">inputKeys</button></a></td>
+		    </tr>
+		</tbody>
+	</table>
         <br>
 
-        <h2>Prob list Test: <a href="/listProb">Test</a></h2>
+	<table class="table table-bordered">
+		<thead>
+		    <tr>
+			<th>Upload</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <tr>
+			<td>Upload Test&nbsp;&nbsp;<a href="/uploadTest"><button class="btn btn-info">uploadTest</button></a></td>
+		    </tr>
+		</tbody>
+	</table>
         <br>
 
-        <h2>Round insert Test: <a href="/inputRounds">Test</a></h2>
+	<table class="table table-bordered">
+		<thead>
+		    <tr>
+			<th>Problem</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <tr>
+			<td>Prob insert&nbsp;&nbsp;<a href="/inputProb"><button class="btn btn-info">inputProb</button></a></td>
+			<td>Prob delete&nbsp;&nbsp;<a href="/deleteProb"><button class="btn btn-info">deleteProb</button></a></td>
+			<td>Prob list&nbsp;&nbsp;<a href="/listProb"><button class="btn btn-info">listProb</button></a></td>
+		    </tr>
+		</tbody>
+	</table>
         <br>
 
-        <h2>Round delete Test: <a href="/deleteRound">Test</a></h2>
+	<table class="table table-bordered">
+		<thead>
+		    <tr>
+			<th>Round</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <tr>
+			<td>Round insert&nbsp;&nbsp;<a href="/inputRounds"><button class="btn btn-info">inputRounds</button></a></td>
+			<td>Round delete&nbsp;&nbsp;<a href="/deleteRound"><button class="btn btn-info">deleteRound</button></a></td>
+			<td>Round list&nbsp;&nbsp;<a href="/listRound"><button class="btn btn-info">listRound</button></a></td>
+		    </tr>
+		</tbody>
+	</table>
         <br>
 
-        <h2>Round list Test: <a href="/listRound">Test</a></h2>
+	<table class="table table-bordered">
+		<thead>
+		    <tr>
+			<th>FlagStolen</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <tr>
+			<td>FlagStolen list&nbsp;&nbsp;<a href="/listFlagStolen"><button class="btn btn-info">listFlagStolen</button></a></td>
+		    </tr>
+		</tbody>
+	</table>
         <br>
 
-        <h2>FlagStolen list Test: <a href="/listFlagStolen">Test</a></h2>
-        <br>
-
-        <h2>FlagStolen input: <a href="/inputFlagStolen">Test</a></h2>
-        <br>
-
-        <h2>FlagStolen delete: <a href="/deleteFlagStolen">Test</a></h2>
+	<table class="table table-bordered">
+		<thead>
+		    <tr>
+			<th>Temp</th>
+		    </tr>
+		</thead>
+		<tbody>
+		    <tr>
+			<td>FlagStolen input&nbsp;&nbsp;<a href="/inputFlagStolen"><button class="btn btn-info">inputFlagStolen</button></a></td>
+			<td>FlagStolen delete&nbsp;&nbsp;<a href="/deleteFlagStolen"><button class="btn btn-info">deleteFlagStolen</button></a></td>
+		    </tr>
+		</tbody>
+	</table>
         <br>
 
         <hr>
