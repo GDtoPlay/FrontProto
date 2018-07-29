@@ -1,6 +1,6 @@
 def parser(string):
     Parsed_List = []
-    NList = string.split(' ')
+    NList = string.split(',')
     current_int = 0
     counter = 8
     for ch in NList:

@@ -163,7 +163,8 @@ def stolenFlag():
         prob_id = stolen.problem_id
         hex_str = ''
         for ToHex in stolen.ids:
-            hex_str = hex_str + hex(ord(ToHex)) + " "
+            hex_str = hex_str + hex(ord(ToHex)) + ','
+        hex_str = hex_str[:-1]
         Nstolen_list.append([prob_id, hex_str])
     return render_template('StolenFlag.html', title='stolenFlag', Nstolen_list=Nstolen_list)
 
