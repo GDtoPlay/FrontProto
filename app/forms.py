@@ -50,8 +50,8 @@ class ProbListForm(FlaskForm):
 
 class RoundInsertForm(FlaskForm):
     round_number = IntegerField('Round_Num', validators=[DataRequired()])
-    rount_start = DateTimeField('Rount_Start', format="%Y-%m-%dT%H:%M:%S", validators=[DataRequired()])
-    rount_end = DateTimeField('Rount_End', format="%Y-%m-%dT%H:%M:%S", validators=[DataRequired()])
+    rount_start = DateTimeField('Rount_Start', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
+    rount_end = DateTimeField('Rount_End', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_round_number(self, round_number):
