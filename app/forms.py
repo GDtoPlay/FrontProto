@@ -83,6 +83,7 @@ class RoundListForm(FlaskForm):
 # for test not a real function to be served
 class FlagStolenInsertForm(FlaskForm):
     problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    flag_stolen_id = IntegerField('Flag_stolen_ID', validators=[DataRequired()])
     ids = StringField('ids', validators=[DataRequired()])
     submit = SubmitField('input Key')
 

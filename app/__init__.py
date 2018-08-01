@@ -14,7 +14,7 @@ Bootstrap(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.from_object(Config)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:key13689@localhost:3306/temp'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:key13689@localhost:3306/ransomware'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

@@ -114,7 +114,7 @@ def listRound():
 def inputFlagStolen():
     form = FlagStolenInsertForm()
     if form.validate_on_submit():
-        FlagStolen = flag_stolen(problem_id=form.problem_id.data, ids=form.ids.data)
+        FlagStolen = flag_stolen(problem_id=form.problem_id.data, flag_stolen_id=form.flag_stolen_id.data, ids=form.ids.data)
         db.session.add(FlagStolen)
         db.session.commit()
         return redirect(url_for('index'))

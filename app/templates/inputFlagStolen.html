@@ -13,6 +13,13 @@
             {% endfor %}
         </p>
         <p>
+            {{ form.flag_stolen_id.label }}<br>
+            {{ form.flag_stolen_id(size=32) }}<br>
+            {% for error in form.flag_stolen_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
             {{ form.ids.label }}<br>
             {{ form.ids(size=32) }}<br>
             {% for error in form.ids.errors %}
