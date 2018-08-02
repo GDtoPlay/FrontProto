@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>datetimeSearch</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.time_start.label }}<br>
+            {{ form.time_start(size=32) }}<br>
+            {% for error in form.time_start.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.time_end.label }}<br>
+            {{ form.ftime_end(size=32) }}<br>
+            {% for error in form.time_end.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    </div>
+{% endblock %}
