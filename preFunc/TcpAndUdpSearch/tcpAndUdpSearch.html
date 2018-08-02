@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>List Packet</h1>
+    <h3>TCP</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>packet_id</th>
+                <th>ip_header</th>
+                <th>tcp_header</th>
+                <th>src_ip</th>
+                <th>dst_ip</th>
+                <th>src_port</th>
+                <th>dst_port</th>
+                <th>payload_data</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for packet in TcpAndUdp %}
+            <tr>
+                {% if packet[0] is 0 %}
+                <td>{{packet[1].packet_id}}</td>
+                <td>{{packet[1].ip_header}}</td>
+                <td>{{packet[1].tcp_header}}</td>
+                <td>{{packet[2]}}</td>
+                <td>{{packet[3]}}</td>
+                <td>{{packet[1].src_port}}</td>
+                <td>{{packet[1].dst_port}}</td>
+                <td>{{packet[4]}}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h3>UDP</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>packet_id</th>
+                <th>ip_header</th>
+                <th>src_ip</th>
+                <th>dst_ip</th>
+                <th>src_port</th>
+                <th>dst_port</th>
+                <th>payload_data</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for packet in TcpAndUdp %}
+            <tr>
+                {% if packet[0] is 1 %}
+                <td>{{packet[1].packet_id}}</td>
+                <td>{{packet[1].ip_header}}</td>
+                <td>{{packet[2]}}</td>
+                <td>{{packet[3]}}</td>
+                <td>{{packet[1].src_port}}</td>
+                <td>{{packet[1].dst_port}}</td>
+                <td>{{packet[4]}}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <div class="col-md-6">
+        {% if page - 3 > 0 %}
+        <a href="/tcpAndUdpSearch?page={{page - 3}}"> <<< </a>
+        {% else %}
+        <a href="/tcpAndUdpSearch?page={{page}}"> <<< </a>
+        {% endif %}
+
+        {% if page - 2 > 0 %}
+        <a href="/tcpAndUdpSearch?page={{page - 2}}"> << </a>
+        {% else %}
+        <a href="/tcpAndUdpSearch?page={{page}}"> << </a>
+        {% endif %}
+
+        {% if page - 1 > 0 %}
+        <a href="/tcpAndUdpSearch?page={{page - 1}}"> < </a>
+        {% else %}
+        <a href="/tcpAndUdpSearch?page={{page}}"> < </a>
+        {% endif %}
+
+        <a href="/tcpAndUdpSearch?page={{page}}"> || </a>
+        <a href="/tcpAndUdpSearch?page={{page + 1}}"> > </a>
+        <a href="/tcpAndUdpSearch?page={{page + 2}}"> >> </a>
+        <a href="/tcpAndUdpSearch?page={{page + 3}}"> >>> </a>
+    </div>
+{% endblock %}
