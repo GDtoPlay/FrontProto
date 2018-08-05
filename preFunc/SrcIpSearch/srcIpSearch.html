@@ -19,7 +19,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for packet in TcpAndUdp %}
+        {% for packet in TcpList %}
             <tr>
                 {% if packet[0] is 0 %}
                 <td>{{packet[1].packet_id}}</td>
@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for packet in TcpAndUdp %}
+        {% for packet in UdpList %}
             <tr>
                 {% if packet[0] is 1 %}
                 <td>{{packet[1].packet_id}}</td>
@@ -68,30 +68,5 @@
         {% endfor %}
         </tbody>
     </table>
-    </div>
-
-    <div class="col-md-6">
-        {% if page - 3 > 0 %}
-        <a href="/tcpAndUdpSearch?page={{page - 3}}"> <<< </a>
-        {% else %}
-        <a href="/tcpAndUdpSearch?page={{page}}"> <<< </a>
-        {% endif %}
-
-        {% if page - 2 > 0 %}
-        <a href="/tcpAndUdpSearch?page={{page - 2}}"> << </a>
-        {% else %}
-        <a href="/tcpAndUdpSearch?page={{page}}"> << </a>
-        {% endif %}
-
-        {% if page - 1 > 0 %}
-        <a href="/tcpAndUdpSearch?page={{page - 1}}"> < </a>
-        {% else %}
-        <a href="/tcpAndUdpSearch?page={{page}}"> < </a>
-        {% endif %}
-
-        <a href="/tcpAndUdpSearch?page={{page}}"> || </a>
-        <a href="/tcpAndUdpSearch?page={{page + 1}}"> > </a>
-        <a href="/tcpAndUdpSearch?page={{page + 2}}"> >> </a>
-        <a href="/tcpAndUdpSearch?page={{page + 3}}"> >>> </a>
     </div>
 {% endblock %}

@@ -18,7 +18,7 @@ class flag_stolen(db.Model):
     problem_id = db.Column(INTEGER(11), primary_key=True)
     flag_stolen_id = db.Column(INTEGER(11), primary_key=True)
     ids = db.Column(db.BLOB)
-
+    validity = db.Column(INTEGER(11))
 
     def __repr__(self):
         return '<ids: {0}, problem_id: {1} >'.format(self.ids, self.problem_id)
