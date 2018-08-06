@@ -103,7 +103,7 @@ def deleteRound():
 def listRound():
     form = RoundListForm()
     if form.validate_on_submit():
-        Select = round_time.query.filter_by(round_number=form.round_number.data).first()
+        Select = db.engine.execute('select * from round_time where round_number = ' + str(form.round_number.data))
         return render_template('listRound.html', title='listRound', form=form, List=[], Select=Select)
     List = db.engine.execute('select * from round_time')
     return render_template('listRound.html', title='listRound', form=form, List=List, Select=None)

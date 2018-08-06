@@ -18,23 +18,25 @@
         <thead>
             <tr>
                 <th>round_number</th>
-                <th>rount_start</th>
-                <th>rount_end</th>
+                <th>round_start</th>
+                <th>round_end</th>
             </tr>
         </thead>
         <tbody>
         {% if Select %}
+        {% for select in Select %}
             <tr>
-                <td>{{Select.round_number}}</td>
-                <td>{{Select.rount_start}}</td>
-                <td>{{Select.rount_end}}</td>
+                <td>{{select.round_number}}</td>
+                <td>{{select.round_start}}</td>
+                <td>{{select.round_end}}</td>
             </tr>
+        {% endfor %}
         {% endif %}
         {% for round in List %}
             <tr>
                 <td>{{round.round_number}}</td>
-                <td>{{round.rount_start}}</td>
-                <td>{{round.rount_end}}</td>
+                <td>{{round.round_start}}</td>
+                <td>{{round.round_end}}</td>
             </tr>
         {% endfor %}
         </tbody>

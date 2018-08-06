@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, IntegerField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import flag_table, problem, round_time, flag_stolen
+from app import db
 
 
 
@@ -75,7 +76,7 @@ class RoundListForm(FlaskForm):
     submit = SubmitField('input Key')
 
     def validate_round_number(self, round_number):
-        Round = round_time.query.filter_by(round_number=round_number.data).first()
+        Round = db.engine.execute('select * from round_time where round_number = ' + str(round_number.data))
         if Round is None:
             raise ValidationError('This round_number does not exist')
 
