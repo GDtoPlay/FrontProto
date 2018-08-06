@@ -1,6 +1,7 @@
 import os
-from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
+import MySQLdb
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/ransomware'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db=sqlalchemy.create_engine("mysql://root:1234@127.0.0.1:3306/ransomware")
+
+import sqltest
