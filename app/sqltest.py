@@ -5,16 +5,13 @@ import MySQLdb
 
 class MYSQLTest(unittest.TestCase):
 
-    def test_ethernet_packet(self):
+    def test_problem(self):
         sql= 'select problem_name from problem where problem_id = 1'
         result= 'test'
         c=dbconnect.db.engine.execute(sql)
-        print(c)
-        print(type(c))
         for row in c:
-            print(row)
-            print(type(row))
-            self.assertEqual(c,result)
+            print(row['problem_name'])
+            self.assertEqual(row['problem_name'],result)
 
 
 #    def test_flag_stolen(unittest.TestCase):
