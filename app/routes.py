@@ -161,11 +161,12 @@ def stolenFlag():
     Nstolen_list = []
     for stolen in stolen_list:
         prob_id = stolen.problem_id
+        validity = stolen.validity
         hex_str = ''
         for ToHex in stolen.ids:
             hex_str = hex_str + hex(ord(ToHex)) + ','
         hex_str = hex_str[:-1]
-        Nstolen_list.append([prob_id, hex_str])
+        Nstolen_list.append([prob_id, hex_str, validity])
     return render_template('StolenFlag.html', title='stolenFlag', Nstolen_list=Nstolen_list)
 
 
@@ -174,3 +175,21 @@ def stealingPacket():
     packets = request.form['packets']
     parsed_packets = parser(packets)
     return render_template('StealingPacket.html', title='stealingPacket', parsed_packets=parsed_packets)
+
+
+@app.route('/searchByVali', methods=['GET'])
+def searchByVali():
+    validity = request.args.get('validity')
+    sql = 'select * from flag_stolen where validity = '
+    stolen_list = db.engine.execute(sql + str(validity))
+    hex_list = []
+    Nstolen_list = []
+    for stolen in stolen_list:
+        prob_id = stolen.problem_id
+        validity = stolen.validity
+        hex_str = ''
+        for ToHex in stolen.ids:
+            hex_str = hex_str + hex(ord(ToHex)) + ','
+        hex_str = hex_str[:-1]
+        Nstolen_list.append([prob_id, hex_str, validity])
+    return render_template('searchByVali.html', title='searchByVali', Nstolen_list=Nstolen_list)
