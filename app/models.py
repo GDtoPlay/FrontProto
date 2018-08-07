@@ -52,10 +52,10 @@ class raw_packet(db.Model):
     __tablename__ = 'raw_packet'
     packet_id = db.Column(BIGINT(20), primary_key=True)
     packet_time = db.Column(db.DATETIME)
-    raw_pakcet_data = db.Column(MEDIUMBLOB)
+    raw_packet_data = db.Column(MEDIUMBLOB)
 
     def __repr__(self):
-        return '<packet_id: {0}, packet_time: {1}, raw_pakcet_data: {2} >'.format(self.packet_id, self.packet_time, self.raw_pakcet_data)
+        return '<packet_id: {0}, packet_time: {1}, raw_pakcet_data: {2} >'.format(self.packet_id, self.packet_time, self.raw_packet_data)
 
 
 class ethernet_packet(db.Model):

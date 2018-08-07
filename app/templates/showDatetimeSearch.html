@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>List Prob</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>packet_id </th>
+                <th>packet_time </th>
+                <th>raw_packcet_data </th>
+                <th>raw_packet_data (HEX) </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for Show in Nshow_list %}
+            <tr>
+                <td>{{(Show[0]).packet_id}}</td>
+                <td>{{(Show[0]).packet_time}}</td>
+                <td>{{Show[2]}}</td>
+                <td>{{Show[1]}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

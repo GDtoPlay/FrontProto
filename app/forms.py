@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField, IntegerField, DateTimeField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import flag_table, problem, round_time, flag_stolen
+from app.models import *
 from app import db
+from DatetimeCalc import InFiveMin
 
 
 
@@ -112,4 +113,14 @@ class FlagStolenListForm(FlaskForm):
     def validate_problem_id(self, problem_id):
         Prob = problem.query.filter_by(problem_id=problem_id.data).first()
         if Prob is None:
+            raise ValidationError('This problem_id does not exist')
+
+
+class DatetimeSearchForm(FlaskForm):
+    time_start = DateTimeField('time_Start', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
+    time_end = DateTimeField('time_End', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def time_compair(self, time_start, time_end):
+        if not InFiveMin(time_start, time_end):
             raise ValidationError('This problem_id does not exist')

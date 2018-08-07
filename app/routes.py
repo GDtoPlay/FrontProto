@@ -2,11 +2,13 @@ import os
 from flask import render_template, request, redirect, url_for, flash
 from app import app, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from app import app, db
-from app.forms import RegistrationForm, ProbInsertForm, ProbDeleteForm, ProbListForm, RoundInsertForm, RoundDeleteForm, RoundListForm, FlagStolenListForm, FlagStolenInsertForm, FlagStolenDeleteForm
-from app.models import flag_table, problem, round_time, flag_stolen
+from app.forms import *
+from app.models import *
 from app.parser import parser
 from werkzeug import secure_filename
 from datetime import datetime
+from DatetimeCalc import InFiveMin
+from binToAsc import binToAsc
 
 @app.route('/')
 @app.route('/index')
@@ -193,3 +195,86 @@ def searchByVali():
         hex_str = hex_str[:-1]
         Nstolen_list.append([prob_id, hex_str, validity])
     return render_template('searchByVali.html', title='searchByVali', Nstolen_list=Nstolen_list)
+
+
+@app.route('/datetimeSearch', methods=['GET', 'POST'])
+def datetimeSearch():
+    form = DatetimeSearchForm()
+    if form.validate_on_submit():
+	if not InFiveMin(form.time_start.data, form.time_end.data):
+            flash('time interval is more then 5 min')
+            return redirect(url_for('datetimeSearch'))
+        sql = 'select * from raw_packet where packet_time BETWEEN '
+        Show = db.engine.execute(sql + "'" + str(form.time_start.data) + "'" + ' AND ' + "'" + str(form.time_end.data) + "'" + 'Limit 0,10')
+        Nshow_list = []
+        for raw_pac in Show:
+            hex_str = ''
+            asc_str = ''
+            for ToHex in raw_pac.raw_packet_data:
+                hex_str = hex_str + hex(ord(ToHex)) + ' '
+            hex_str = hex_str[:-1]
+
+            asc_str = binToAsc(raw_pac.raw_packet_data)
+            Nshow_list.append([raw_pac, hex_str, asc_str])
+        return render_template('showDatetimeSearch.html', title='showDatetimeSearch', Nshow_list=Nshow_list)
+    return render_template('datetimeSearch.html', title='datetimeSearch', form=form)
+
+
+@app.route('/tcpAndUdpSearch', methods=['GET'])
+def tcpAndUdpSearch():
+    page = request.args.get('page', default = 1, type = int)
+    sql = 'select packet_id from raw_packet Limit '
+    packet_ids = db.engine.execute(sql + str(10*(int(page) - 1)) + ', 10')
+    TcpList = []
+    UdpList = []
+    for pack_id in packet_ids:    #type 0 : TCP,  1 : UDP
+        tsql = 'select * from tcp_ip_packet where packet_id = '
+        tcp_pack = db.engine.execute(tsql + str(pack_id.packet_id))
+        if tcp_pack.rowcount < 1:
+            usql = 'select * from udp_ip_packet where packet_id = '
+            udp_pack = db.engine.execute(usql + str(pack_id.packet_id))
+            for UDP in udp_pack:
+            
+                # src_ip str
+                src_ipInt = ''
+                for ToHex in UDP.src_ip:
+                    src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                src_ipInt = src_ipInt[:-1]
+
+                # dst_ip str
+                dst_ipInt = ''
+                for ToHex in UDP.dst_ip:
+                    dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                dst_ipInt = dst_ipInt[:-1]
+
+                # payload_data hex
+                hex_str = ''
+                for ToHex in UDP.payload_data:
+                    hex_str = hex_str + hex(ord(ToHex)) + ' '
+                hex_str = hex_str[:-1]
+
+                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str])
+        else:
+            for TCP in tcp_pack:
+
+                # src_ip str
+                src_ipInt = ''
+                for ToHex in TCP.src_ip:
+                    src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                src_ipInt = src_ipInt[:-1]
+
+                # dst_ip str
+                dst_ipInt = ''
+                for ToHex in TCP.dst_ip:
+                    dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                dst_ipInt = dst_ipInt[:-1]
+
+                # payload_data hex
+                hex_str = ''
+                for ToHex in TCP.payload_data:
+                    hex_str = hex_str + hex(ord(ToHex)) + ' '
+                hex_str = hex_str[:-1]
+
+                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str])
+
+    return render_template('tcpAndUdpSearch.html', title='tcpAndUdpSearch', TcpList=TcpList, UdpList=UdpList, page=page)
