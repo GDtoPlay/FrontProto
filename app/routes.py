@@ -243,6 +243,118 @@ def showDatetimeSearch():
     return render_template('showDatetimeSearch.html', title='showDatetimeSearch', Nshow_list=Nshow_list, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form)
 
 
+@app.route('/datetimeSearchDif', methods=['GET', 'POST'])
+def datetimeSearchDif():
+    form = DatetimeSearchForm()
+    return render_template('datetimeSearchDif.html', title='datetimeSearchDif', form=form)
+
+
+@app.route('/showDatetimeSearchDif', methods=['GET', 'POST'])
+def showDatetimeSearchDif():
+    form = DatetimeSearchForm(request.form)
+    page = request.form['page']
+    
+    #page set
+    if int(page) > 1:
+        BackPage = int(page) - 1
+    else:
+        BackPage = int(page)
+    FrontPage = int(page) + 1
+
+    #datetime Day and Time
+    time_start = str(form.time_start.data)
+
+    time_end = str(form.time_end.data)
+
+
+    if not InFiveMin(form.time_start.data, form.time_end.data):
+        flash('time interval is more then 5 min')
+        return redirect(url_for('datetimeSearch'))
+    sql = 'select packet_id from raw_packet where packet_time BETWEEN '
+
+    Show = db.engine.execute(sql + "'" + str(form.time_start.data) + "'" + ' AND ' + "'" + str(form.time_end.data) + "'" + 'Limit ' + str(10*(int(page) - 1)) + ', 10')
+    TcpList = []
+    UdpList = []
+    for pack_id in Show:
+        tsql = 'select * from tcp_ip_packet where packet_id = '
+        tcp_pack = db.engine.execute(tsql + str(pack_id.packet_id))
+        if tcp_pack.rowcount < 1:
+            usql = 'select * from udp_ip_packet where packet_id = '
+            udp_pack = db.engine.execute(usql + str(pack_id.packet_id))
+
+            for UDP in udp_pack:
+                # ip_header hex
+                ip_headerInt = ''
+                for ToHex in UDP.ip_header:
+                    ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+                ip_headerInt = ip_headerInt[:-1]
+
+                # src_ip str
+                src_ipInt = ''
+                for ToHex in UDP.src_ip:
+                    src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                src_ipInt = src_ipInt[:-1]
+
+                # dst_ip str
+                dst_ipInt = ''
+                for ToHex in UDP.dst_ip:
+                    dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+                dst_ipInt = dst_ipInt[:-1]
+
+                # payload_data hex
+                hex_str = ''
+                for ToHex in UDP.payload_data:
+                    hex_str = hex_str + hex(ord(ToHex)) + ' '
+                hex_str = hex_str[:-1]
+
+                # payload_data ascii
+                asc_str = ''
+                asc_str = binToAsc(UDP.payload_data)
+
+                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
+        else:
+            for TCP in tcp_pack:
+                # tcp_header hex
+
+                tcp_headerInt = ''
+                for ToHex in TCP.tcp_header:
+                    tcp_headerInt = tcp_headerInt + hex(ord(ToHex)) + ' '
+                tcp_headerInt = tcp_headerInt[:-1]
+
+                # ip_header hex
+                ip_headerInt = ''
+                for ToHex in TCP.ip_header:
+                    ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+                ip_headerInt = ip_headerInt[:-1]
+
+                # src_ip str
+                src_ipInt = ''
+                for ToHex in TCP.src_ip:
+
+                    src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                src_ipInt = src_ipInt[:-1]
+
+                # dst_ip str
+                dst_ipInt = ''
+                for ToHex in TCP.dst_ip:
+                    dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+                dst_ipInt = dst_ipInt[:-1]
+
+                # payload_data hex
+                hex_str = ''
+                for ToHex in TCP.payload_data:
+                    hex_str = hex_str + hex(ord(ToHex)) + ' '
+                hex_str = hex_str[:-1]
+
+                # payload_data ascii
+                asc_str = ''
+                asc_str = binToAsc(TCP.payload_data)
+
+                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt, tcp_headerInt])
+
+        
+    return render_template('showDatetimeSearchDif.html', title='showDatetimeSearchDif', TcpList=TcpList, UdpList=UdpList, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form)
+
 
 @app.route('/tcpAndUdpSearch', methods=['GET'])
 def tcpAndUdpSearch():
