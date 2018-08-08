@@ -2,20 +2,20 @@
 
 {% block content %}
     <div class="container">
-    <h1>datetimeSearch</h1>
-    <form action="{{ url_for('showDatetimeSearch') }}" method="post">
+    <h1>src_ip Search</h1>
+    <form action="{{ url_for('dstIpSearch') }}" method="post">
         {{ form.hidden_tag() }}
         <p>
-            {{ form.time_start.label }}<br>
-            {{ form.time_start(size=32) }}<br>
-            {% for error in form.time_start.errors %}
+            {{ form.src_ip.label }}<br>
+            {{ form.src_ip(size=32) }}<br>
+            {% for error in form.src_ip.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
-            {{ form.time_end.label }}<br>
-            {{ form.time_end(size=32) }}<br>
-            {% for error in form.time_end.errors %}
+            {{ form.src_port.label }}<br>
+            {{ form.src_port(size=32) }}<br>
+            {% for error in form.src_port.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

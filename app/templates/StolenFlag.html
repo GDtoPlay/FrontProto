@@ -18,7 +18,7 @@
                 <td>{{prob[0]}}</td>
                 <td>{{prob[2]}}</td>
                 <form action="{{ url_for('stealingPacket') }}" method="post">
-			<td><input readonly type="hidden" name="packets" value={{prob[1]}}>{{prob[1]}}</td>
+			<td><input readonly type="hidden" name="packets" value="{{prob[1]}}">{{prob[1]}}</td>
 			<td><input type="submit" value="go"></td>
 		</form>
             </tr>

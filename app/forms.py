@@ -4,6 +4,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import *
 from app import db
 from DatetimeCalc import InFiveMin
+from IpParser import IpParser
 
 
 
@@ -14,7 +15,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('input Key')
 
     def validate_flag_val(self, flag_val):
-        Key = flag_table.query.filter_by(flag_val=flag_val.data).first()
+        Key = db.engine.execute('select * from flag_table where flag_val = ' + str(flag_val.data)) 
         if Key is not None:
             raise ValidationError('This flag_val is aready in here')
 
@@ -57,7 +58,7 @@ class RoundInsertForm(FlaskForm):
     submit = SubmitField('input Key')
 
     def validate_round_number(self, round_number):
-        Round = round_time.query.filter_by(round_number=round_number.data).first()
+        Round = db.engine.execute('select * from round_time where round_number = ' + str(round_number.data))
         if Round is not None:
             raise ValidationError('This round_number is aready in here')
 
@@ -67,7 +68,7 @@ class RoundDeleteForm(FlaskForm):
     submit = SubmitField('input Key')
 
     def validate_round_number(self, round_number):
-        Round = round_time.query.filter_by(round_number=round_number.data).first()
+        Round = db.engine.execute('select * from round_time where round_number = ' + str(round_number.data))
         if Round is None:
             raise ValidationError('This round_number does not exist')
 
@@ -119,8 +120,31 @@ class FlagStolenListForm(FlaskForm):
 class DatetimeSearchForm(FlaskForm):
     time_start = DateTimeField('time_Start', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
     time_end = DateTimeField('time_End', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
+    page = IntegerField('page', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def time_compair(self, time_start, time_end):
         if not InFiveMin(time_start, time_end):
             raise ValidationError('This problem_id does not exist')
+
+
+class DstIpSearchForm(FlaskForm):
+    dst_ip = StringField('dst_ip', validators=[DataRequired()])
+    dst_port = IntegerField('dst_port', validators=[DataRequired()])
+    page = IntegerField('page', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_dst_ip(self, dst_ip):
+        if IpParser(dst_ip.data) is -1:
+            raise ValidationError('Wrong input')
+
+
+class SrcIpSearchForm(FlaskForm):
+    src_ip = StringField('src_ip', validators=[DataRequired()])
+    src_port = IntegerField('src_port', validators=[DataRequired()])
+    page = IntegerField('page', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_src_ip(self, src_ip):
+        if IpParser(src_ip.data) is -1:
+            raise ValidationError('Wrong input')

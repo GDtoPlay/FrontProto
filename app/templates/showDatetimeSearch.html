@@ -23,5 +23,17 @@
         {% endfor %}
         </tbody>
     </table>
+    <form action="{{ url_for('showDatetimeSearch') }}" method="post">
+        <input readonly type="hidden" name="time_start" value="{{time_start}}">
+        <input readonly type="hidden" name="time_end" value="{{time_end}}">
+	<input readonly type="hidden" name="page" value={{BackPage}}>
+	<input type="submit" value="back">
+    </form>
+    <form action="{{ url_for('showDatetimeSearch') }}" method="post">
+        <input readonly type="hidden" name="time_start" value="{{time_start}}">
+        <input readonly type="hidden" name="time_end" value="{{time_end}}">
+	<input readonly type="hidden" name="page" value={{FrontPage}}>
+	<input type="submit" value="foward">
+    </form>
     </div>
 {% endblock %}

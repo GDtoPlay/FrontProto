@@ -9,6 +9,7 @@ from werkzeug import secure_filename
 from datetime import datetime
 from DatetimeCalc import InFiveMin
 from binToAsc import binToAsc
+from IpParser import IpParser
 
 @app.route('/')
 @app.route('/index')
@@ -166,7 +167,7 @@ def stolenFlag():
         validity = stolen.validity
         hex_str = ''
         for ToHex in stolen.ids:
-            hex_str = hex_str + hex(ord(ToHex)) + ','
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
         hex_str = hex_str[:-1]
         Nstolen_list.append([prob_id, hex_str, validity])
     return render_template('StolenFlag.html', title='stolenFlag', Nstolen_list=Nstolen_list)
@@ -191,7 +192,7 @@ def searchByVali():
         validity = stolen.validity
         hex_str = ''
         for ToHex in stolen.ids:
-            hex_str = hex_str + hex(ord(ToHex)) + ','
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
         hex_str = hex_str[:-1]
         Nstolen_list.append([prob_id, hex_str, validity])
     return render_template('searchByVali.html', title='searchByVali', Nstolen_list=Nstolen_list)
@@ -200,24 +201,47 @@ def searchByVali():
 @app.route('/datetimeSearch', methods=['GET', 'POST'])
 def datetimeSearch():
     form = DatetimeSearchForm()
-    if form.validate_on_submit():
-	if not InFiveMin(form.time_start.data, form.time_end.data):
-            flash('time interval is more then 5 min')
-            return redirect(url_for('datetimeSearch'))
-        sql = 'select * from raw_packet where packet_time BETWEEN '
-        Show = db.engine.execute(sql + "'" + str(form.time_start.data) + "'" + ' AND ' + "'" + str(form.time_end.data) + "'" + 'Limit 0,10')
-        Nshow_list = []
-        for raw_pac in Show:
-            hex_str = ''
-            asc_str = ''
-            for ToHex in raw_pac.raw_packet_data:
-                hex_str = hex_str + hex(ord(ToHex)) + ' '
-            hex_str = hex_str[:-1]
-
-            asc_str = binToAsc(raw_pac.raw_packet_data)
-            Nshow_list.append([raw_pac, hex_str, asc_str])
-        return render_template('showDatetimeSearch.html', title='showDatetimeSearch', Nshow_list=Nshow_list)
     return render_template('datetimeSearch.html', title='datetimeSearch', form=form)
+
+
+@app.route('/showDatetimeSearch', methods=['GET', 'POST'])
+def showDatetimeSearch():
+    form = DatetimeSearchForm(request.form)
+    page = request.form['page']
+    
+    #page set
+    if int(page) > 1:
+        BackPage = int(page) - 1
+    else:
+        BackPage = int(page)
+    FrontPage = int(page) + 1
+
+    #datetime Day and Time
+    time_start = str(form.time_start.data)
+
+    time_end = str(form.time_end.data)
+
+
+    if not InFiveMin(form.time_start.data, form.time_end.data):
+        flash('time interval is more then 5 min')
+        return redirect(url_for('datetimeSearch'))
+    sql = 'select * from raw_packet where packet_time BETWEEN '
+    Show = db.engine.execute(sql + "'" + str(form.time_start.data) + "'" + ' AND ' + "'" + str(form.time_end.data) + "'" + 'Limit ' + str(10*(int(page) - 1)) + ', 10')
+    Nshow_list = []
+    for raw_pac in Show:
+
+        hex_str = ''
+        for ToHex in raw_pac.raw_packet_data:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(raw_pac.raw_packet_data)
+
+        Nshow_list.append([raw_pac, hex_str, asc_str])
+    return render_template('showDatetimeSearch.html', title='showDatetimeSearch', Nshow_list=Nshow_list, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form)
+
 
 
 @app.route('/tcpAndUdpSearch', methods=['GET'])
@@ -244,7 +268,7 @@ def tcpAndUdpSearch():
                 # dst_ip str
                 dst_ipInt = ''
                 for ToHex in UDP.dst_ip:
-                    dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                    dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
                 dst_ipInt = dst_ipInt[:-1]
 
                 # payload_data hex
@@ -253,7 +277,11 @@ def tcpAndUdpSearch():
                     hex_str = hex_str + hex(ord(ToHex)) + ' '
                 hex_str = hex_str[:-1]
 
-                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str])
+                # payload_data ascii
+                asc_str = ''
+                asc_str = binToAsc(UDP.payload_data)
+
+                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str, asc_str])
         else:
             for TCP in tcp_pack:
 
@@ -266,7 +294,7 @@ def tcpAndUdpSearch():
                 # dst_ip str
                 dst_ipInt = ''
                 for ToHex in TCP.dst_ip:
-                    dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                    dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
                 dst_ipInt = dst_ipInt[:-1]
 
                 # payload_data hex
@@ -275,6 +303,182 @@ def tcpAndUdpSearch():
                     hex_str = hex_str + hex(ord(ToHex)) + ' '
                 hex_str = hex_str[:-1]
 
-                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str])
+                # payload_data ascii
+                asc_str = ''
+                asc_str = binToAsc(TCP.payload_data)
+
+                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str, asc_str])
 
     return render_template('tcpAndUdpSearch.html', title='tcpAndUdpSearch', TcpList=TcpList, UdpList=UdpList, page=page)
+
+
+@app.route('/dstIpSearchInput', methods=['GET', 'POST'])
+def dstIpSearchInput():
+    form = DstIpSearchForm()
+    return render_template('dstIpSearchInput.html', title='dstIpSearchInput', form=form)
+
+@app.route('/dstIpSearch', methods=['GET', 'POST'])
+def dstIpSearch():
+    form = DstIpSearchForm(request.form)
+    page = request.form['page']
+
+    #for parameter
+    dst_ip = str(form.dst_ip.data)
+
+    dst_port = str(form.dst_port.data)
+
+    TcpList = []
+    UdpList = []
+
+    #page set
+    if int(page) > 1:
+        BackPage = int(page) - 1
+    else:
+        BackPage = int(page)
+    FrontPage = int(page) + 1
+    
+    tsql = 'select * from tcp_ip_packet where dst_ip = '
+    tarIp = IpParser(form.dst_ip.data)
+    tsql = tsql + 'cast(' + str(tarIp)+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    tcp_pack = db.engine.execute(tsql)
+        
+    for foundTcp in tcp_pack:
+        # src_ip str
+        src_ipInt = ''
+        for ToHex in foundTcp.src_ip:
+            src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        src_ipInt = src_ipInt[:-1]
+
+        # dst_ip str
+        dst_ipInt = ''
+        for ToHex in foundTcp.dst_ip:
+            dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+        dst_ipInt = dst_ipInt[:-1]
+
+        # payload_data hex
+        hex_str = ''
+        for ToHex in foundTcp.payload_data:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(foundTcp.payload_data)
+
+        TcpList.append([foundTcp, src_ipInt, dst_ipInt, hex_str, asc_str])
+
+    usql = 'select * from udp_ip_packet where dst_ip = '
+    usql = usql + 'cast(' + str(tarIp)+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    udp_pack = db.engine.execute(usql)
+        
+    for foundUdp in udp_pack:
+        # src_ip str
+        src_ipInt = ''
+        for ToHex in foundUdp.src_ip:
+            src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        src_ipInt = src_ipInt[:-1]
+
+        # dst_ip str
+        dst_ipInt = ''
+        for ToHex in foundUdp.dst_ip:
+            dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        dst_ipInt = dst_ipInt[:-1]
+
+        # payload_data hex
+        hex_str = ''
+        for ToHex in foundUdp.payload_data:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(foundUdp.payload_data)
+
+        UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str])
+    return render_template('dstIpSearch.html', title='dstIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, dst_ip=dst_ip, dst_port=dst_port)
+
+
+@app.route('/srcIpSearchInput', methods=['GET', 'POST'])
+def srcIpSearchInput():
+    form = SrcIpSearchForm()
+    return render_template('srcIpSearchInput.html', title='srcIpSearchInput', form=form)
+
+@app.route('/srcIpSearch', methods=['GET', 'POST'])
+def srcIpSearch():
+    form = SrcIpSearchForm(request.form)
+    page = request.form['page']
+
+    #for parameter
+    src_ip = str(form.src_ip.data)
+
+    src_port = str(form.src_port.data)
+
+    TcpList = []
+    UdpList = []
+
+    #page set
+    if int(page) > 1:
+        BackPage = int(page) - 1
+    else:
+        BackPage = int(page)
+    FrontPage = int(page) + 1
+    
+    tsql = 'select * from tcp_ip_packet where src_ip = '
+    tarIp = IpParser(form.src_ip.data)
+    tsql = tsql + 'cast(' + str(tarIp)+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    tcp_pack = db.engine.execute(tsql)
+        
+    for foundTcp in tcp_pack:
+        # src_ip str
+        src_ipInt = ''
+        for ToHex in foundTcp.src_ip:
+            src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        src_ipInt = src_ipInt[:-1]
+
+        # dst_ip str
+        dst_ipInt = ''
+        for ToHex in foundTcp.dst_ip:
+            dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+        dst_ipInt = dst_ipInt[:-1]
+
+        # payload_data hex
+        hex_str = ''
+        for ToHex in foundTcp.payload_data:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(foundTcp.payload_data)
+
+        TcpList.append([foundTcp, src_ipInt, dst_ipInt, hex_str, asc_str])
+
+    usql = 'select * from udp_ip_packet where src_ip = '
+    usql = usql + 'cast(' + str(tarIp)+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    udp_pack = db.engine.execute(usql)
+        
+    for foundUdp in udp_pack:
+        # src_ip str
+        src_ipInt = ''
+        for ToHex in foundUdp.src_ip:
+            src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        src_ipInt = src_ipInt[:-1]
+
+        # dst_ip str
+        dst_ipInt = ''
+        for ToHex in foundUdp.dst_ip:
+            dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        dst_ipInt = dst_ipInt[:-1]
+
+        # payload_data hex
+        hex_str = ''
+        for ToHex in foundUdp.payload_data:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(foundUdp.payload_data)
+
+        UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str])
+    return render_template('srcIpSearch.html', title='srcIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, src_ip=src_ip, src_port=src_port)

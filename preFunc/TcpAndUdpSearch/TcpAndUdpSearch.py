@@ -11,7 +11,7 @@ def tcpAndUdpSearch():
     for pack_id in packet_ids:    #type 0 : TCP,  1 : UDP
         tsql = 'select * from tcp_ip_packet where packet_id = '
         tcp_pack = db.engine.execute(tsql + str(pack_id.packet_id))
-        if tcp_pack.rowcount is 0:
+        if tcp_pack.rowcount < 1:
             usql = 'select * from udp_ip_packet where packet_id = '
             udp_pack = db.engine.execute(usql + str(pack_id.packet_id))
             for UDP in udp_pack:
@@ -34,7 +34,10 @@ def tcpAndUdpSearch():
                     hex_str = hex_str + hex(ord(ToHex)) + ' '
                 hex_str = hex_str[:-1]
 
-                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str])
+                asc_str = ''
+                asc_str = binToAsc(UDP.payload_data)
+
+                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str, asc_str])
         else:
             for TCP in tcp_pack:
 
@@ -56,6 +59,9 @@ def tcpAndUdpSearch():
                     hex_str = hex_str + hex(ord(ToHex)) + ' '
                 hex_str = hex_str[:-1]
 
-                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str])
+                asc_str = ''
+                asc_str = binToAsc(TCP.payload_data)
+
+                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str, asc_str])
 
     return render_template('tcpAndUdpSearch.html', title='tcpAndUdpSearch', TcpList=TcpList, UdpList=UdpList, page=page)
