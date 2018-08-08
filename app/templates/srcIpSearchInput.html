@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container">
     <h1>src_ip Search</h1>
-    <form action="{{ url_for('dstIpSearch') }}" method="post">
+    <form action="{{ url_for('srcIpSearch') }}" method="post">
         {{ form.hidden_tag() }}
         <p>
             {{ form.src_ip.label }}<br>

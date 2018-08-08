@@ -339,6 +339,10 @@ def dstIpSearch():
     
     tsql = 'select * from tcp_ip_packet where dst_ip = '
     tarIp = IpParser(form.dst_ip.data)
+
+    if tarIp is -1:
+        return redirect(url_for('dstIpSearchInput'))
+
     tsql = tsql + 'cast(' + str(tarIp)+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
     tcp_pack = db.engine.execute(tsql)
         
@@ -425,6 +429,10 @@ def srcIpSearch():
     
     tsql = 'select * from tcp_ip_packet where src_ip = '
     tarIp = IpParser(form.src_ip.data)
+
+    if tarIp is -1:
+        return redirect(url_for('srcIpSearchInput'))
+
     tsql = tsql + 'cast(' + str(tarIp)+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
     tcp_pack = db.engine.execute(tsql)
         
