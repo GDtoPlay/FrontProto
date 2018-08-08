@@ -22,8 +22,8 @@
         {% for pack in TcpList %}
             <tr>
                 <td>{{pack[1].packet_id}}</td>
-                <td>{{pack[1].ip_header}}</td>
-                <td>{{pack[1].tcp_header}}</td>
+                <td>{{pack[6]}}</td>
+                <td>{{pack[7]}}</td>
                 <td>{{pack[2]}}</td>
                 <td>{{pack[3]}}</td>
                 <td>{{pack[1].src_port}}</td>
@@ -53,7 +53,7 @@
         {% for Pack in UdpList %}
             <tr>
                 <td>{{Pack[1].packet_id}}</td>
-                <td>{{Pack[1].ip_header}}</td>
+                <td>{{Pack[6]}}</td>
                 <td>{{Pack[2]}}</td>
                 <td>{{Pack[3]}}</td>
                 <td>{{Pack[1].src_port}}</td>
