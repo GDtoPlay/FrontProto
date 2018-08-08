@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>src_ip Search</h1>
+    <form action="{{ url_for('allSearch') }}" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.rawIpOne.label }}<br>
+            {{ form.rawIpOne(size=32) }}<br>
+            {% for error in form.rawIpOne.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.PortOne.label }}<br>
+            {{ form.PortOne(size=32) }}<br>
+            {% for error in form.PortOne.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.rawIpTwo.label }}<br>
+            {{ form.rawIpTwo(size=32) }}<br>
+            {% for error in form.rawIpTwo.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.portTwo.label }}<br>
+            {{ form.portTwo(size=32) }}<br>
+            {% for error in form.portTwo.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            <input readonly type="hidden" name="page" value=1>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    </div>
+{% endblock %}

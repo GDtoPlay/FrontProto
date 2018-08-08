@@ -64,19 +64,19 @@
         {% endfor %}
         </tbody>
     </table>
-    <form action="{{ url_for('dstIpSearch') }}" method="post">
-        <input readonly type="hidden" name="dst_ip" value="{{dst_ip}}">
-        <input readonly type="hidden" name="dst_port" value="{{dst_port}}">
-        <input readonly type="hidden" name="src_ip" value="{{src_ip}}">
-        <input readonly type="hidden" name="src_port" value="{{src_port}}">
+    <form action="{{ url_for('allSearch') }}" method="post">
+        <input readonly type="hidden" name="rawIpOne" value="{{rawIpOne}}">
+        <input readonly type="hidden" name="PortOne" value="{{PortOne}}">
+        <input readonly type="hidden" name="rawIpTwo" value="{{rawIpTwo}}">
+        <input readonly type="hidden" name="portTwo" value="{{portTwo}}">
 	<input readonly type="hidden" name="page" value={{BackPage}}>
 	<input type="submit" value="back">
     </form>
-    <form action="{{ url_for('dstIpSearch') }}" method="post">
-        <input readonly type="hidden" name="dst_ip" value="{{dst_ip}}">
-        <input readonly type="hidden" name="dst_port" value="{{dst_port}}">
-        <input readonly type="hidden" name="src_ip" value="{{src_ip}}">
-        <input readonly type="hidden" name="src_port" value="{{src_port}}">
+    <form action="{{ url_for('allSearch') }}" method="post">
+        <input readonly type="hidden" name="rawIpOne" value="{{rawIpOne}}">
+        <input readonly type="hidden" name="PortOne" value="{{PortOne}}">
+        <input readonly type="hidden" name="rawIpTwo" value="{{rawIpTwo}}">
+        <input readonly type="hidden" name="portTwo" value="{{portTwo}}">
 	<input readonly type="hidden" name="page" value={{FrontPage}}>
 	<input type="submit" value="foward">
     </form>

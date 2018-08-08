@@ -148,3 +148,20 @@ class SrcIpSearchForm(FlaskForm):
     def validate_src_ip(self, src_ip):
         if IpParser(src_ip.data) is -1:
             raise ValidationError('Wrong input')
+
+
+class AllSearchForm(FlaskForm):
+    rawIpOne = StringField('rawIpOne', validators=[DataRequired()])
+    PortOne = IntegerField('PortOne', validators=[DataRequired()])
+    rawIpTwo = StringField('rawIpTwo', validators=[DataRequired()])
+    portTwo = IntegerField('portTwo', validators=[DataRequired()])
+    page = IntegerField('page', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+    def validate_rawIpOne(self, rawIpOne):
+        if IpParser(rawIpOne.data) is -1:
+            raise ValidationError('Wrong input')
+
+    def validate_rawIpTwo(self, rawIpTwo):
+        if IpParser(rawIpTwo.data) is -1:
+            raise ValidationError('Wrong input')
