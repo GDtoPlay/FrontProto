@@ -177,7 +177,81 @@ def stolenFlag():
 def stealingPacket():
     packets = request.form['packets']
     parsed_packets = parser(packets)
-    return render_template('StealingPacket.html', title='stealingPacket', parsed_packets=parsed_packets)
+    for pack in parsed_packets:
+        tsql = 'select * from tcp_ip_packet where packet_id = '
+        tcp_pack = db.engine.execute(tsql + str(pack))
+        if tcp_pack.rowcount < 1:
+            usql = 'select * from udp_ip_packet where packet_id = '
+            udp_pack = db.engine.execute(usql + str(pack))
+            for UDP in udp_pack:
+                # ip_header hex
+                ip_headerInt = ''
+                for ToHex in UDP.ip_header:
+                    ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+                ip_headerInt = ip_headerInt[:-1]
+
+                # src_ip str
+                src_ipInt = ''
+                for ToHex in UDP.src_ip:
+                    src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                src_ipInt = src_ipInt[:-1]
+
+                # dst_ip str
+                dst_ipInt = ''
+                for ToHex in UDP.dst_ip:
+                    dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+                dst_ipInt = dst_ipInt[:-1]
+
+                # payload_data hex
+                hex_str = ''
+                for ToHex in UDP.payload_data:
+                    hex_str = hex_str + hex(ord(ToHex)) + ' '
+                hex_str = hex_str[:-1]
+
+                # payload_data ascii
+                asc_str = ''
+                asc_str = binToAsc(UDP.payload_data)
+
+                UdpList.append([1, UDP, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
+        else:
+            for TCP in tcp_pack:
+                # tcp_header hex
+                tcp_headerInt = ''
+                for ToHex in TCP.tcp_header:
+                    tcp_headerInt = tcp_headerInt + hex(ord(ToHex)) + ' '
+                tcp_headerInt = tcp_headerInt[:-1]
+
+                # ip_header hex
+                ip_headerInt = ''
+                for ToHex in TCP.ip_header:
+                    ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+                ip_headerInt = ip_headerInt[:-1]
+
+                # src_ip str
+                src_ipInt = ''
+                for ToHex in TCP.src_ip:
+                    src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+                src_ipInt = src_ipInt[:-1]
+
+                # dst_ip str
+                dst_ipInt = ''
+                for ToHex in TCP.dst_ip:
+                    dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+                dst_ipInt = dst_ipInt[:-1]
+
+                # payload_data hex
+                hex_str = ''
+                for ToHex in TCP.payload_data:
+                    hex_str = hex_str + hex(ord(ToHex)) + ' '
+                hex_str = hex_str[:-1]
+
+                # payload_data ascii
+                asc_str = ''
+                asc_str = binToAsc(TCP.payload_data)
+
+                TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt, tcp_headerInt])
+ 
+    return render_template('StealingPacket.html', title='StealingPacket', TcpList=TcpList, UdpList=UdpList)
 
 
 @app.route('/searchByVali', methods=['GET'])
@@ -197,6 +271,107 @@ def searchByVali():
         Nstolen_list.append([prob_id, hex_str, validity])
     return render_template('searchByVali.html', title='searchByVali', Nstolen_list=Nstolen_list)
 
+
+@app.route('/deepSearch', methods=['POST'])
+def deepSearch():
+    # set values
+    page = request.form['page']
+    rawIpOne = request.form['src_ip']
+    PortOne = request.form['src_port']
+    rawIpTwo = request.form['dst_ip']
+    portTwo = request.form['dst_port']
+    pack_id = request.form['packet_id']
+
+    ipOne = IpParser(str(rawIpOne))
+    ipTwo = IpParser(str(rawIpTwo))
+
+    TcpList = []
+    UdpList = []
+
+    #page set
+    if int(page) > 1:
+        BackPage = int(page) - 1
+    else:
+        BackPage = int(page)
+    FrontPage = int(page) + 1
+
+    #SQLs
+    searchUdpSQL = 'select * from udp_ip_packet where '+'((src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')) and packet_id >= '+str(pack_id)
+    searchTcpSQL = 'select * from tcp_ip_packet where '+'((src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')) and packet_id >= '+str(pack_id)
+
+    tcp_pack = db.engine.execute(tsql)
+    udp_pack = db.engine.execute(searchUdpSQL)
+
+    for foundTcp in tcp_pack:
+        # tcp_header hex
+        tcp_headerInt = ''
+        for ToHex in foundTcp.tcp_header:
+            tcp_headerInt = tcp_headerInt + hex(ord(ToHex)) + ' '
+        tcp_headerInt = tcp_headerInt[:-1]
+
+        # ip_header hex
+        ip_headerInt = ''
+        for ToHex in foundTcp.ip_header:
+            ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+        ip_headerInt = ip_headerInt[:-1]
+
+        # src_ip str
+        src_ipInt = ''
+        for ToHex in foundTcp.src_ip:
+            src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        src_ipInt = src_ipInt[:-1]
+
+        # dst_ip str
+        dst_ipInt = ''
+        for ToHex in foundTcp.dst_ip:
+            dst_ipInt = dst_ipInt + str(ord(ToHex)) + '.'
+        dst_ipInt = dst_ipInt[:-1]
+
+        # payload_data hex
+        hex_str = ''
+        for ToHex in foundTcp.payload_data:
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(foundTcp.payload_data)
+
+        TcpList.append([foundTcp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt, tcp_headerInt])
+
+    for foundUdp in udp_pack:
+        # ip_header hex
+        ip_headerInt = ''
+        for ToHex in foundUdp.ip_header:
+            ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+        ip_headerInt = ip_headerInt[:-1]
+
+        # src_ip str
+        src_ipInt = ''
+        for ToHex in foundUdp.src_ip:
+            src_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        src_ipInt = src_ipInt[:-1]
+
+        # dst_ip str
+        dst_ipInt = ''
+        for ToHex in foundUdp.dst_ip:
+            dst_ipInt = src_ipInt + str(ord(ToHex)) + '.'
+        dst_ipInt = dst_ipInt[:-1]
+
+        # payload_data hex
+        hex_str = ''
+        for ToHex in foundUdp.payload_data:
+
+            hex_str = hex_str + hex(ord(ToHex)) + ' '
+        hex_str = hex_str[:-1]
+
+        # payload_data ascii
+        asc_str = ''
+        asc_str = binToAsc(foundUdp.payload_data)
+
+        UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
+
+    return render_template('deepSearch.html', title='deepSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, dst_ip=rawIpTwo, dst_port=portTwo, src_ip=rawIpOne, src_port=PortOne)
 
 @app.route('/datetimeSearch', methods=['GET', 'POST'])
 def datetimeSearch():
@@ -471,7 +646,7 @@ def dstIpSearch():
     if tarIp is -1:
         return redirect(url_for('dstIpSearchInput'))
 
-    tsql = tsql + 'cast(' + str(tarIp)+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    tsql = tsql + 'cast(' + str(hex(tarIp))+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
     tcp_pack = db.engine.execute(tsql)
         
     for foundTcp in tcp_pack:
@@ -512,7 +687,7 @@ def dstIpSearch():
         TcpList.append([foundTcp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt, tcp_headerInt])
 
     usql = 'select * from udp_ip_packet where dst_ip = '
-    usql = usql + 'cast(' + str(tarIp)+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    usql = usql + 'cast(' + str(hex(tarIp))+ ' as binary(4)) and dst_port = ' + str(form.dst_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
     udp_pack = db.engine.execute(usql)
         
     for foundUdp in udp_pack:
@@ -579,10 +754,22 @@ def srcIpSearch():
     if tarIp is -1:
         return redirect(url_for('srcIpSearchInput'))
 
-    tsql = tsql + 'cast(' + str(tarIp)+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    tsql = tsql + 'cast(' + str(hex(tarIp))+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
     tcp_pack = db.engine.execute(tsql)
         
     for foundTcp in tcp_pack:
+        # tcp_header hex
+        tcp_headerInt = ''
+        for ToHex in foundTcp.tcp_header:
+            tcp_headerInt = tcp_headerInt + hex(ord(ToHex)) + ' '
+        tcp_headerInt = tcp_headerInt[:-1]
+
+        # ip_header hex
+        ip_headerInt = ''
+        for ToHex in foundTcp.ip_header:
+            ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+        ip_headerInt = ip_headerInt[:-1]
+
         # src_ip str
         src_ipInt = ''
         for ToHex in foundTcp.src_ip:
@@ -605,13 +792,19 @@ def srcIpSearch():
         asc_str = ''
         asc_str = binToAsc(foundTcp.payload_data)
 
-        TcpList.append([foundTcp, src_ipInt, dst_ipInt, hex_str, asc_str])
+        TcpList.append([foundTcp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt, tcp_headerInt])
 
     usql = 'select * from udp_ip_packet where src_ip = '
-    usql = usql + 'cast(' + str(tarIp)+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    usql = usql + 'cast(' + str(hex(tarIp))+ ' as binary(4)) and src_port = ' + str(form.src_port.data) +  ' Limit ' + str(10*(int(page) - 1)) + ', 10'
     udp_pack = db.engine.execute(usql)
         
     for foundUdp in udp_pack:
+        # ip_header hex
+        ip_headerInt = ''
+        for ToHex in foundUdp.ip_header:
+            ip_headerInt = ip_headerInt + hex(ord(ToHex)) + ' '
+        ip_headerInt = ip_headerInt[:-1]
+
         # src_ip str
         src_ipInt = ''
         for ToHex in foundUdp.src_ip:
@@ -634,5 +827,5 @@ def srcIpSearch():
         asc_str = ''
         asc_str = binToAsc(foundUdp.payload_data)
 
-        UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str])
+        UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
     return render_template('srcIpSearch.html', title='srcIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, src_ip=src_ip, src_port=src_port)

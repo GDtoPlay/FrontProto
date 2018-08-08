@@ -44,6 +44,7 @@
                 <th>src_ip</th>
                 <th>src_port</th>
                 <th>dst_ip</th>
+                <th>src_port</th>
                 <th>dst_port</th>
                 <th>payload_data(hex)</th>
                 <th>payload_data</th>
@@ -64,13 +65,17 @@
         {% endfor %}
         </tbody>
     </table>
-    <form action="{{ url_for('srcIpSearch') }}" method="post">
+    <form action="{{ url_for('dstIpSearch') }}" method="post">
+        <input readonly type="hidden" name="dst_ip" value="{{dst_ip}}">
+        <input readonly type="hidden" name="dst_port" value="{{dst_port}}">
         <input readonly type="hidden" name="src_ip" value="{{src_ip}}">
         <input readonly type="hidden" name="src_port" value="{{src_port}}">
 	<input readonly type="hidden" name="page" value={{BackPage}}>
 	<input type="submit" value="back">
     </form>
-    <form action="{{ url_for('srcIpSearch') }}" method="post">
+    <form action="{{ url_for('dstIpSearch') }}" method="post">
+        <input readonly type="hidden" name="dst_ip" value="{{dst_ip}}">
+        <input readonly type="hidden" name="dst_port" value="{{dst_port}}">
         <input readonly type="hidden" name="src_ip" value="{{src_ip}}">
         <input readonly type="hidden" name="src_port" value="{{src_port}}">
 	<input readonly type="hidden" name="page" value={{FrontPage}}>

@@ -2,20 +2,90 @@
 
 {% block content %}
     <div class="container">
-    <h1>StealingPacket</h1>
+    <h1>List Packet</h1>
+    <h3>TCP</h3>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Packet_Num</th>
+                <th>packet_id</th>
+                <th>ip_header</th>
+                <th>tcp_header</th>
+                <th>src_ip</th>
+                <th>src_port</th>
+                <th>dst_ip</th>
+                <th>dst_port</th>
+                <th>payload_data(hex)</th>
+                <th>payload_data</th>
             </tr>
         </thead>
         <tbody>
-        {% for packet in parsed_packets %}
+        {% for pack in TcpList %}
             <tr>
-                <td>{{packet}}</td>
+                <td>{{pack[1].packet_id}}</td>
+                <td>{{pack[6]}}</td>
+                <td>{{pack[7]}}</td>
+                <td>{{pack[2]}}</td>
+                <td>{{pack[1].src_port}}</td>
+                <td>{{pack[3]}}</td>
+                <td>{{pack[1].dst_port}}</td>
+                <td>{{pack[4]}}</td>
+                <td>{{pack[5]}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h3>UDP</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>packet_id</th>
+                <th>ip_header</th>
+                <th>src_ip</th>
+                <th>src_port</th>
+                <th>dst_ip</th>
+                <th>dst_port</th>
+                <th>payload_data(hex)</th>
+                <th>payload_data</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for Pack in UdpList %}
+            <tr>
+                <td>{{Pack[1].packet_id}}</td>
+                <td>{{Pack[6]}}</td>
+                <td>{{Pack[2]}}</td>
+                <td>{{Pack[1].src_port}}</td>
+                <td>{{Pack[3]}}</td>
+                <td>{{Pack[1].dst_port}}</td>
+                <td>{{Pack[4]}}</td>
+                <td>{{Pack[5]}}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     </div>
+    {% if len(UdpList) > 0 %}
+    <form action="{{ url_for('deepSearch') }}" method="post">
+        <input readonly type="hidden" name="src_ip" value="{{UdpList[0][2]}}">
+        <input readonly type="hidden" name="src_port" value="{{UdpList[0][1].src_port}}">
+	<input readonly type="hidden" name="dst_ip" value={{UdpList[0][3]}}>
+        <input readonly type="hidden" name="dst_port" value="{{UdpList[0][1].dst_port}}">
+        <input readonly type="hidden" name="packet_id" value="{{UdpList[0][1].packet_id}}">
+        <input readonly type="hidden" name="page" value=1>       
+	<input type="submit" value="go deeper Search(UDP)">
+    </form>
+    {% endif %}
+
+    {% if len(TcpList) > 0 %}
+    <form action="{{ url_for('deepSearch') }}" method="post">
+        <input readonly type="hidden" name="src_ip" value="{TcpList[0][2]}}">
+        <input readonly type="hidden" name="src_port" value="{{TcpList[0][1].src_port}}">
+	<input readonly type="hidden" name="dst_ip" value={{TcpList[0][3]}}>
+        <input readonly type="hidden" name="dst_port" value="{{TcpList[0][1].dst_port}}">
+        <input readonly type="hidden" name="packet_id" value="{{TcpList[0][1].packet_id}}">
+        <input readonly type="hidden" name="page" value=1>      
+	<input type="submit" value="go deeper Search(TCP)">
+    </form>
+    {% endif %}
 {% endblock %}
