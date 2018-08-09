@@ -3,8 +3,8 @@ from wtforms import StringField, BooleanField, SubmitField, IntegerField, DateTi
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, InputRequired
 from app.models import *
 from app import db
-from DatetimeCalc import InFiveMin
-from IpParser import IpParser
+from app.DatetimeCalc import InFiveMin
+from app.IpParser import IpParser
 
 
 
