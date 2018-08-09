@@ -10,6 +10,8 @@ from datetime import datetime
 from app.DatetimeCalc import InFiveMin
 from app.binToAsc import binToAsc
 from app.IpParser import IpParser
+from operator import eq
+
 
 @app.route('/')
 @app.route('/index')
@@ -20,6 +22,8 @@ def index():
 def inputKeys():
     form = RegistrationForm()
     if form.validate_on_submit():
+        if not eq(str(form.password.data),"aaaa"):
+            return redirect(url_for('index'))  
         key = flag_table(flag_val=form.flag_val.data, flag_round=form.flag_round.data, problem_id=form.problem_id.data)
 
         sql = "select * from flag_table where problem_id = " + str(form.problem_id.data) + " and flag_round = " + str(form.flag_round.data)
@@ -39,6 +43,8 @@ def inputKeys():
 def deleteKey():
     form = KeyDeleteForm()
     if form.validate_on_submit():
+        if not eq(str(form.password.data),"aaaa"):
+            return redirect(url_for('index')) 
         sql = "select * from flag_table where problem_id = " + str(form.problem_id.data) + " and flag_round = " + str(form.flag_round.data)
         Del = db.engine.execute(sql)
 
@@ -81,6 +87,8 @@ def uploadTest():
 def inputProb():
     form = ProbInsertForm()
     if form.validate_on_submit():
+        if not eq(str(form.password.data),"aaaa"):
+            return redirect(url_for('index')) 
         Prob = problem(problem_id=form.problem_id.data, problem_name=form.problem_name.data)
         db.session.add(Prob)
         db.session.commit()
@@ -93,6 +101,8 @@ def inputProb():
 def deleteProb():
     form = ProbDeleteForm()
     if form.validate_on_submit():
+        if not eq(str(form.password.data),"aaaa"):
+            return redirect(url_for('index')) 
         Del = problem.query.filter_by(problem_id=form.problem_id.data).first()
         db.session.delete(Del)
         db.session.commit()
@@ -115,6 +125,8 @@ def listProb():
 def inputRounds():
     form = RoundInsertForm()
     if form.validate_on_submit():
+        if not eq(str(form.password.data),"aaaa"):
+            return redirect(url_for('index')) 
         if form.rount_start.data >= form.rount_end.data:
             flash('Invalid round_start, round_end')
             return redirect(url_for('inputRounds'))
@@ -130,6 +142,8 @@ def inputRounds():
 def deleteRound():
     form = RoundDeleteForm()
     if form.validate_on_submit():
+        if not eq(str(form.password.data),"aaaa"):
+            return redirect(url_for('index')) 
         Del = round_time.query.filter_by(round_number=form.round_number.data).first()
         db.session.delete(Del)
         db.session.commit()

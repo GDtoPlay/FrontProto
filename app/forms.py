@@ -12,6 +12,7 @@ class RegistrationForm(FlaskForm):
     flag_val = StringField('flag_Key_val', validators=[DataRequired()])
     flag_round = IntegerField('Round', validators=[DataRequired()])
     problem_id = IntegerField('Prob_id', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_flag_val(self, flag_val):
@@ -22,6 +23,7 @@ class RegistrationForm(FlaskForm):
 class KeyDeleteForm(FlaskForm):
     problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
     flag_round = IntegerField('flag_round', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
 
@@ -34,6 +36,7 @@ class KeyListForm(FlaskForm):
 class ProbInsertForm(FlaskForm):
     problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
     problem_name = StringField('Prob_Name', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_problem_id(self, problem_id):
@@ -44,6 +47,7 @@ class ProbInsertForm(FlaskForm):
 
 class ProbDeleteForm(FlaskForm):
     problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_problem_id(self, problem_id):
@@ -66,6 +70,7 @@ class RoundInsertForm(FlaskForm):
     round_number = IntegerField('Round_Num', validators=[DataRequired()])
     rount_start = DateTimeField('Rount_Start', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
     rount_end = DateTimeField('Rount_End', format="%Y-%m-%d %H:%M:%S", validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_round_number(self, round_number):
@@ -76,6 +81,7 @@ class RoundInsertForm(FlaskForm):
 
 class RoundDeleteForm(FlaskForm):
     round_number = IntegerField('Round_Num', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_round_number(self, round_number):
