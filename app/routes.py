@@ -371,7 +371,7 @@ def deepSearch():
 
         UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
 
-    return render_template('deepSearch.html', title='deepSearch', TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, dst_ip=rawIpTwo, dst_port=portTwo, src_ip=rawIpOne, src_port=PortOne)
+    return render_template('deepSearch.html', title='deepSearch', TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, dst_ip=rawIpTwo, dst_port=portTwo, src_ip=rawIpOne, src_port=PortOne, page=page)
 
 @app.route('/datetimeSearch', methods=['GET', 'POST'])
 def datetimeSearch():
@@ -379,10 +379,13 @@ def datetimeSearch():
     return render_template('datetimeSearch.html', title='datetimeSearch', form=form)
 
 
-@app.route('/showDatetimeSearch', methods=['GET', 'POST'])
+@app.route('/showDatetimeSearch', methods=['POST'])
 def showDatetimeSearch():
     form = DatetimeSearchForm(request.form)
     page = request.form['page']
+  
+    if (form.time_start.data is None) or (form.time_end.data is None):
+        return redirect(url_for('datetimeSearch'))
     
     #page set
     if int(page) > 1:
@@ -415,7 +418,7 @@ def showDatetimeSearch():
         asc_str = binToAsc(raw_pac.raw_packet_data)
 
         Nshow_list.append([raw_pac, hex_str, asc_str])
-    return render_template('showDatetimeSearch.html', title='showDatetimeSearch', Nshow_list=Nshow_list, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form)
+    return render_template('showDatetimeSearch.html', title='showDatetimeSearch', Nshow_list=Nshow_list, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form, page=page)
 
 
 @app.route('/datetimeSearchDif', methods=['GET', 'POST'])
@@ -428,6 +431,9 @@ def datetimeSearchDif():
 def showDatetimeSearchDif():
     form = DatetimeSearchForm(request.form)
     page = request.form['page']
+
+    if (form.time_start.data is None) or (form.time_end.data is None):
+        return redirect(url_for('datetimeSearch'))
     
     #page set
     if int(page) > 1:
@@ -528,7 +534,7 @@ def showDatetimeSearchDif():
                 TcpList.append([0, TCP, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt, tcp_headerInt])
 
         
-    return render_template('showDatetimeSearchDif.html', title='showDatetimeSearchDif', TcpList=TcpList, UdpList=UdpList, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form)
+    return render_template('showDatetimeSearchDif.html', title='showDatetimeSearchDif', TcpList=TcpList, UdpList=UdpList, time_start=time_start, time_end=time_end, BackPage=BackPage, FrontPage=FrontPage, form=form, page=page)
 
 
 @app.route('/tcpAndUdpSearch', methods=['GET'])
@@ -625,6 +631,9 @@ def dstIpSearch():
     form = DstIpSearchForm(request.form)
     page = request.form['page']
 
+    if form.dst_port.data is None:
+        return redirect(url_for('dstIpSearchInput'))
+
     #for parameter
     dst_ip = str(form.dst_ip.data)
 
@@ -720,7 +729,7 @@ def dstIpSearch():
         asc_str = binToAsc(foundUdp.payload_data)
 
         UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
-    return render_template('dstIpSearch.html', title='dstIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, dst_ip=dst_ip, dst_port=dst_port)
+    return render_template('dstIpSearch.html', title='dstIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, dst_ip=dst_ip, dst_port=dst_port, page=page)
 
 
 @app.route('/srcIpSearchInput', methods=['GET', 'POST'])
@@ -732,6 +741,9 @@ def srcIpSearchInput():
 def srcIpSearch():
     form = SrcIpSearchForm(request.form)
     page = request.form['page']
+
+    if form.src_port.data is None:
+        return redirect(url_for('srcIpSearchInput'))
 
     #for parameter
     src_ip = str(form.src_ip.data)
@@ -828,7 +840,7 @@ def srcIpSearch():
         asc_str = binToAsc(foundUdp.payload_data)
 
         UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
-    return render_template('srcIpSearch.html', title='srcIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, src_ip=src_ip, src_port=src_port)
+    return render_template('srcIpSearch.html', title='srcIpSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, src_ip=src_ip, src_port=src_port, page=page)
 
 
 @app.route('/allSearchInput', methods=['GET'])
@@ -846,8 +858,14 @@ def allSearch():
     rawIpTwo = request.form['rawIpTwo']
     portTwo = request.form['portTwo']
 
+    if (form.PortOne.data is None) or (form.portTwo.data is None):
+        return redirect(url_for('allSearchInput'))
+
     ipOne = IpParser(str(rawIpOne))
     ipTwo = IpParser(str(rawIpTwo))
+
+    if (ipOne is -1) or (ipTwo is -1):
+        return redirect(url_for('allSearchInput'))
 
     TcpList = []
     UdpList = []
@@ -938,4 +956,4 @@ def allSearch():
 
         UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
 
-    return render_template('allSearch.html', title='allSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, rawIpTwo=rawIpTwo, portTwo=portTwo, rawIpOne=rawIpOne, PortOne=PortOne)
+    return render_template('allSearch.html', title='allSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, rawIpTwo=rawIpTwo, portTwo=portTwo, rawIpOne=rawIpOne, PortOne=PortOne, page=page)

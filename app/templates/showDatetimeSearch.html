@@ -3,6 +3,7 @@
 {% block content %}
     <div class="container">
     <h1>List Prob</h1>
+    <h5>Page: {{page}}</h5>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -23,17 +24,32 @@
         {% endfor %}
         </tbody>
     </table>
+    <div style="width:90px; height:20px; float:left; margin-right:10px;">
     <form action="{{ url_for('showDatetimeSearch') }}" method="post">
         <input readonly type="hidden" name="time_start" value="{{time_start}}">
         <input readonly type="hidden" name="time_end" value="{{time_end}}">
 	<input readonly type="hidden" name="page" value={{BackPage}}>
 	<input type="submit" value="back">
     </form>
+    </div>
+
+    <div style="width:90px; height:20px; float:left; margin-right:10px;">
     <form action="{{ url_for('showDatetimeSearch') }}" method="post">
         <input readonly type="hidden" name="time_start" value="{{time_start}}">
         <input readonly type="hidden" name="time_end" value="{{time_end}}">
 	<input readonly type="hidden" name="page" value={{FrontPage}}>
 	<input type="submit" value="foward">
     </form>
+    </div>
+
+    <div style="width:300px; height:20px; float:left; margin-right:10px;">
+    <form action="{{ url_for('showDatetimeSearch') }}" method="post">
+        <input readonly type="hidden" name="time_start" value="{{time_start}}">
+        <input readonly type="hidden" name="time_end" value="{{time_end}}">
+	<input type="number" name="page" min="1">
+	<input type="submit" value="go">
+    </form>
+    </div>
+
     </div>
 {% endblock %}

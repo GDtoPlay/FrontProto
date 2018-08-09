@@ -7,7 +7,7 @@ from flask_bootstrap import Bootstrap
 
 
 UPLOAD_FOLDER = '/home/tozero13689/FrontProto/app/upload/test'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'pcap'])
+ALLOWED_EXTENSIONS = set(['pcap'])
 
 app = Flask(__name__)
 Bootstrap(app)
