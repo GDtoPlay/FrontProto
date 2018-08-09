@@ -3,6 +3,8 @@
 {% block content %}
     <div class="container">
     <h1>datetimeSearch</h1>
+    <p>round time format: %Y-%m-%d %H:%M:%S</p>
+    <p>time space limit 5 min</p>
     <form action="{{ url_for('showDatetimeSearchDif') }}" method="post">
         {{ form.hidden_tag() }}
         <p>
