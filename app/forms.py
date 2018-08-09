@@ -9,15 +9,26 @@ from IpParser import IpParser
 
 
 class RegistrationForm(FlaskForm):
-    flag_val = StringField('Key', validators=[DataRequired()])
+    flag_val = StringField('flag_Key_val', validators=[DataRequired()])
     flag_round = IntegerField('Round', validators=[DataRequired()])
-    problem_id = IntegerField('Prob', validators=[DataRequired()])
+    problem_id = IntegerField('Prob_id', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_flag_val(self, flag_val):
-        Key = db.engine.execute('select * from flag_table where flag_val = ' + str(flag_val.data)) 
-        if Key is not None:
+        Key = db.engine.execute("select * from flag_table where flag_val = '" + str(flag_val.data) + "'")
+        if Key.rowcount > 0:
             raise ValidationError('This flag_val is aready in here')
+
+class KeyDeleteForm(FlaskForm):
+    problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    flag_round = IntegerField('flag_round', validators=[DataRequired()])
+    submit = SubmitField('input Key')
+
+
+class KeyListForm(FlaskForm):
+    problem_id = IntegerField('Prob_ID', validators=[DataRequired()])
+    flag_round = IntegerField('flag_round', validators=[DataRequired()])
+    submit = SubmitField('input Key')
 
 
 class ProbInsertForm(FlaskForm):

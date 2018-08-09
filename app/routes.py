@@ -21,11 +21,47 @@ def inputKeys():
     form = RegistrationForm()
     if form.validate_on_submit():
         key = flag_table(flag_val=form.flag_val.data, flag_round=form.flag_round.data, problem_id=form.problem_id.data)
+
+        sql = "select * from flag_table where problem_id = " + str(form.problem_id.data) + " and flag_round = " + str(form.flag_round.data)
+        Insert = db.engine.execute(sql)
+        
+        if Insert.rowcount > 0:
+            return redirect(url_for('inputKeys'))
+
         db.session.add(key)
         db.session.commit()
         flash('Key has submitted')
         return redirect(url_for('index'))
     return render_template('inputKeys.html', title='inputKeys', form=form)
+
+
+@app.route('/deleteKey', methods=['GET', 'POST'])
+def deleteKey():
+    form = KeyDeleteForm()
+    if form.validate_on_submit():
+        sql = "select * from flag_table where problem_id = " + str(form.problem_id.data) + " and flag_round = " + str(form.flag_round.data)
+        Del = db.engine.execute(sql)
+
+        if Del.rowcount is not 1:
+            return redirect(url_for('deleteKey'))
+
+        db.session.delete(Del)
+        db.session.commit()
+        flash('Prob has deleted')
+        return redirect(url_for('index'))
+    return render_template('deleteKey.html', title='deleteKey', form=form)
+
+
+@app.route('/listKey', methods=['GET', 'POST'])
+def listKey():
+    form = KeyListForm()
+    if form.validate_on_submit():
+        sql = "select * from flag_table where problem_id = " + str(form.problem_id.data) + " and flag_round = " + str(form.flag_round.data)
+        Select = db.engine.execute(sql).first()
+        return render_template('listKey.html', title='listKey', form=form, List=[], Select=Select)
+    List = db.engine.execute('select * from flag_table')
+    return render_template('listKey.html', title='listKey', form=form, List=List, Select=None)
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -53,7 +89,6 @@ def inputProb():
     return render_template('inputProb.html', title='inputProb', form=form)
 
 
-
 @app.route('/deleteProb', methods=['GET', 'POST'])
 def deleteProb():
     form = ProbDeleteForm()
@@ -64,6 +99,7 @@ def deleteProb():
         flash('Prob has deleted')
         return redirect(url_for('index'))
     return render_template('deleteProb.html', title='deleteProb', form=form)
+
 
 @app.route('/listProb', methods=['GET', 'POST'])
 def listProb():

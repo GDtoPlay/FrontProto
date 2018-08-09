@@ -6,13 +6,6 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
-            {{ form.flag_val.label }}<br>
-            {{ form.flag_val(size=32) }}<br>
-            {% for error in form.flag_val.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
             {{ form.flag_round.label }}<br>
             {{ form.flag_round(size=32) }}<br>
             {% for error in form.flag_round.errors %}
@@ -26,6 +19,14 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
+        <p>
+            {{ form.flag_val.label }}<br>
+            {{ form.flag_val(size=32) }}<br>
+            {% for error in form.flag_val.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
         <p>{{ form.submit() }}</p>
     </form>
     </div>

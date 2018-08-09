@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+    <h1>Flag val List</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.flag_round.label }}<br>
+            {{ form.flag_round(size=32) }}<br>
+            {% for error in form.flag_round.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.problem_id.label }}<br>
+            {{ form.problem_id(size=32) }}<br>
+            {% for error in form.problem_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>flag_round </th>
+                <th>problem_id </th>
+                <th>flag_val </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if Select %}
+            <tr>
+                <td>{{Select.flag_round}}</td>
+                <td>{{Select.problem_id}}</td>
+                <td>{{Select.flag_val}}</td>
+            </tr>
+        {% endif %}
+        {% for key in List %}
+            <tr>
+                <td>{{key.flag_round}}</td>
+                <td>{{key.problem_id}}</td>
+                <td>{{key.flag_val}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
