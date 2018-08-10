@@ -170,6 +170,7 @@ class AllSearchForm(FlaskForm):
     rawIpTwo = StringField('rawIpTwo', validators=[DataRequired()])
     portTwo = IntegerField('portTwo', validators=[DataRequired()])
     page = IntegerField('page', validators=[DataRequired()])
+    round_number = IntegerField('round_number', validators=[DataRequired()])
     submit = SubmitField('input Key')
 
     def validate_rawIpOne(self, rawIpOne):

@@ -34,6 +34,13 @@
             {% endfor %}
         </p>
         <p>
+            {{ form.round_number.label }}<br>
+            {{ form.round_number(size=32) }}<br>
+            {% for error in form.round_number.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
             <input readonly type="hidden" name="page" value=1>
         </p>
         <p>{{ form.submit() }}</p>

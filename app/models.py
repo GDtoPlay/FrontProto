@@ -38,8 +38,8 @@ class problem(db.Model):
 class round_time(db.Model):
     __tablename__ = 'round_time'
     round_number = db.Column(INTEGER(11), primary_key=True)
-    rount_start = db.Column(db.DATETIME)
-    rount_end = db.Column(db.DATETIME)
+    round_start = db.Column(db.DATETIME)
+    round_end = db.Column(db.DATETIME)
 
     def __repr__(self):
         return '<round_number: {0}, rount_start: {1}, rount_end: {2} >'.format(self.round_number, self.rount_start, self.rount_end)

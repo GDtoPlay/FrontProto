@@ -910,8 +910,9 @@ def allSearch():
     PortOne = request.form['PortOne']
     rawIpTwo = request.form['rawIpTwo']
     portTwo = request.form['portTwo']
+    round_number = request.form['round_number']
 
-    if (form.PortOne.data is None) or (form.portTwo.data is None):
+    if (form.PortOne.data is None) or (form.portTwo.data is None)or (form.round_number.data is None):
         return redirect(url_for('allSearchInput'))
 
     ipOne = IpParser(str(rawIpOne))
@@ -930,13 +931,26 @@ def allSearch():
         BackPage = int(page)
     FrontPage = int(page) + 1
 
+    #time Set
+    Time_Sql = "select * from round_time where round_number = " + str(round_number)
+
+    Time_set = db.engine.execute(Time_Sql)
+
+    if Time_set.rowcount < 1:
+        return redirect(url_for('allSearchInput'))
+
+    Time_Set = Time_set.first()
+
+    Time_Start = Time_Set.round_start
+    Time_End = Time_Set.round_end
+
     #SQLs
-    searchUdpSQL = 'select * from udp_ip_packet where '+'(src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')'+' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    searchUdpSQL = 'select * from udp_ip_packet natural join raw_packet where '+'((src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')) and (packet_time between '+"'"+str(Time_Start)+"' and '"+str(Time_End)+"') "+'Limit ' + str(10*(int(page) - 1)) + ', 10'
 
-    searchTcpSQL = 'select * from tcp_ip_packet where '+'(src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')'+' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    searchTcpSQL = 'select * from tcp_ip_packet natural join raw_packet where '+'((src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')) and (packet_time between '+"'"+str(Time_Start)+"' and '"+str(Time_End)+"') "+'Limit ' + str(10*(int(page) - 1)) + ', 10'
 
 
-    tcp_pack = db.engine.execute(searchTcpSQL )
+    tcp_pack = db.engine.execute(searchTcpSQL)
     udp_pack = db.engine.execute(searchUdpSQL)
 
     for foundTcp in tcp_pack:
@@ -1009,4 +1023,4 @@ def allSearch():
 
         UdpList.append([foundUdp, src_ipInt, dst_ipInt, hex_str, asc_str, ip_headerInt])
 
-    return render_template('allSearch.html', title='allSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, rawIpTwo=rawIpTwo, portTwo=portTwo, rawIpOne=rawIpOne, PortOne=PortOne, page=page)
+    return render_template('allSearch.html', title='allSearch', form=form, TcpList=TcpList, UdpList=UdpList, BackPage=BackPage, FrontPage=FrontPage, rawIpTwo=rawIpTwo, portTwo=portTwo, rawIpOne=rawIpOne, PortOne=PortOne, page=page, round_number=round_number)
