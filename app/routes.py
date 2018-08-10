@@ -348,9 +348,9 @@ def deepSearch():
     FrontPage = int(page) + 1
 
     #SQLs
-    searchUdpSQL = 'select * from udp_ip_packet where '+'((src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')) and packet_id >= '+str(pack_id)+' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    searchUdpSQL = 'select * from udp_ip_packet where '+'(src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')'+' Limit ' + str(10*(int(page) - 1)) + ', 10'
 
-    searchTcpSQL = 'select * from tcp_ip_packet where '+'((src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')) and packet_id >= '+str(pack_id)+' Limit ' + str(10*(int(page) - 1)) + ', 10'
+    searchTcpSQL = 'select * from tcp_ip_packet where '+'(src_ip = cast('+str(hex(ipOne))+' as binary(4)) and src_port = '+str(PortOne)+' and dst_ip = cast('+str(hex(ipTwo))+' as binary(4)) and dst_port = '+str(portTwo)+') or (src_ip = cast('+str(hex(ipTwo))+' as binary(4)) and src_port = '+str(portTwo)+' and dst_ip = cast('+str(hex(ipOne))+' as binary(4)) and dst_port = '+str(PortOne)+')'+' Limit ' + str(10*(int(page) - 1)) + ', 10'
 
     tcp_pack = db.engine.execute(searchTcpSQL)
     udp_pack = db.engine.execute(searchUdpSQL)
