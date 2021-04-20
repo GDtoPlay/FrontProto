@@ -34,7 +34,7 @@ pluggy==0.6.0
 psutil==5.4.3
 ptyprocess==0.5
 pwntools==3.11.0
-py==1.5.2
+py==1.10.0
 pyasn1==0.4.2
 pycparser==2.18
 pycrypto==2.6.1
